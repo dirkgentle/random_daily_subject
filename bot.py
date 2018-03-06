@@ -89,7 +89,7 @@ if __name__ == "__main__":
 				+ ' de ' + today + '.'
 		output_log(title)
 		output_log(topics[today])
-		reddit.subreddit('test').submit(title, selftext=topics[today])
+		reddit.subreddit('ROU').submit(title, selftext=topics[today])
 
 	except Exception as exception:
 		output_log(str(exception))
