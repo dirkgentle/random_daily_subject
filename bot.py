@@ -87,9 +87,13 @@ if __name__ == "__main__":
 		today = random.choice(topics.keys())
 		title = days[datetime.datetime.today().weekday()] \
 				+ ' de ' + today + '.'
+		body = topics[today]
+		body = body + "\n\n*****\n\n"
+		body = body + "*Another bot by \/u/DirkGentle.* "
+		body = body + "[Source](https://github.com/dirkgentle/random_daily_subject)."
 		output_log(title)
-		output_log(topics[today])
-		reddit.subreddit('ROU').submit(title, selftext=topics[today])
+		output_log(body)
+		reddit.subreddit('ROU').submit(title, selftext=body)
 
 	except Exception as exception:
 		output_log(str(exception))
