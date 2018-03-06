@@ -7,6 +7,17 @@ import praw
 
 import login
 
+
+def update_log(id, log_path): #para los comentarios que ya respondi
+	with open(log_path, 'a') as my_log:
+			my_log.write(id + "\n")
+
+def load_log(log_path): #para los comentarios que ya respondi
+	with open(log_path) as my_log:
+		log = my_log.readlines()
+		log = [x.strip('\n') for x in log]
+		return log
+
 def output_log(text): #lo uso para ver el output del bot
 	output_log_path = "/home/pi/Downloads/weeklyRandomUY/output_log.txt"
 	with open(output_log_path, 'a') as myLog:
@@ -75,6 +86,8 @@ if __name__ == "__main__":
 		'Domingo'
 		]
 
+	log_path = '/home/pi/Downloads/weeklyRandomUY/log.txt'
+
 	try:
 		output_log('Comenzando el script')
 		reddit = praw.Reddit(
@@ -84,7 +97,13 @@ if __name__ == "__main__":
 			username = login.username,
 			user_agent = 'testscript for /u/random_daily_subject')
 
-		today = random.choice(topics.keys())
+		log = load_log(log_path)
+		while True:
+			today = random.choice(topics.keys())
+			if today not in log[-6:]:
+				break
+		update_log(today, log_path)
+
 		title = days[datetime.datetime.today().weekday()] \
 				+ ' de ' + today + '.'
 		body = topics[today]
