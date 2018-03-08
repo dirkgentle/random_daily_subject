@@ -2,7 +2,7 @@ import datetime
 
 topics = {
 	'gourmet':
-		'El rincon culinario. Recetas, piques de cocina, '
+		'El rincón culinario. Recetas, piques de cocina, '
 		'marcas, lugares, compras, comidas bizarras. Serios '
 		'y burlones son bienvenidos.',
 	'internacionales':
@@ -17,17 +17,17 @@ topics = {
 	'emprendedor':
 		'Las cosas que hacemos como trabajo extra o a lo que nos '
 		'dedicamos full-time siempre y cuando sea por iniciativa '
-		'propia. Valen anecdotas, preguntas y lo que venga '
-		'mientras este relacionado. Lxs quiero emprendedorxs, '
-		'emprendedorxs mal, que la gente diga **uy que '
+		'propia. Valen anécdotas, preguntas y lo que venga '
+		'mientras esté relacionado. Lxs quiero emprendedorxs, '
+		'emprendedorxs mal, que la gente diga **uy qué '
 		'emprendedorxs estxs pibxs!**',
 	'tips':
 		'[Tips](https://youtu.be/jS4w5S-Jdb4?t=15) uruguayos para '
 		'la vida, el universo y todo lo demas.',
 	'anecdotas':
-		'Lo que quieras. Como te enteraste de los ninos envueltos, '
-		'de las bolas de fraile, las maldades que le hacias a tu '
-		'hermanx, aquella vez que le dijiste mama a la maestra y '
+		'Lo que quieras. Cómo te enteraste de los niños envueltos, '
+		'de las bolas de fraile, las maldades que le hacías a tu '
+		'hermanx, aquella vez que le dijiste mamá a la maestra y '
 		'mucho mas. Si una vez conociste una china que se llamaba '
 		'mayhem, aca es donde contarlo.',
 	'discusion-bardo':
@@ -39,11 +39,11 @@ topics = {
 	'retro':
 		'Para los que se acuerdan del Pompa Borges.',
 	'politica':
-		'Neofeudalistas? Moderadores de /r/PITCNT? Todos son '
+		'¿Neofeudalistas? ¿Moderadores de /r/PITCNT? Todos son '
 		'bienvenidos en esta discusion **respetuosa** *(recordemos, '
-		'el dia de discusion-bardo no es hoy)*.',
+		'el dia de discusión-bardo no es hoy)*.',
 	'academia':
-		'Que estas estudiando? Que pensas estudiar? Que aprendiste '
+		'¿Qué estás estudiando? ¿Qué pensás estudiar? ¿Qué aprendiste '
 		'esta semana?',
 	'poteland':
 		'Pongan lo que quieran y dejen que los votos hagan su trabajo.',
@@ -60,6 +60,6 @@ holidays = {
 		],
 	datetime.datetime(2018,8,24):
 		['la nostalgia',
-		'[Que hacen hoy gurisxs?](https://www.youtube.com/watch?v=CS9OO0S5w2k)'
+		'[¿Qué hacen hoy gurisxs?](https://www.youtube.com/watch?v=CS9OO0S5w2k)'
 		],
 	}
