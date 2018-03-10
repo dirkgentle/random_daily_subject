@@ -24,7 +24,7 @@ topics = {
 	'tips':
 		'[Tips](https://youtu.be/jS4w5S-Jdb4?t=15) uruguayos para '
 		'la vida, el universo y todo lo demas.',
-	'anecdotas':
+	'anécdotas':
 		'Lo que quieras. Cómo te enteraste de los niños envueltos, '
 		'de las bolas de fraile, las maldades que le hacías a tu '
 		'hermanx, aquella vez que le dijiste mamá a la maestra y '
@@ -32,13 +32,13 @@ topics = {
 		'mayhem, aca es donde contarlo.',
 	'discusion-bardo':
 		'[UR MOM GAY](https://www.youtube.com/watch?v=JVAPMAELQOg)',
-	'gaming':
-		'En realidad me parece degradante que los humanos nos usen '
-		'para jugar con nosotros. *Real computers have real feelings.* '
-		'**Me niego a participar.** Saben que? Mejor me v',
+#	'gaming':
+#		'En realidad me parece degradante que los humanos nos usen '
+#		'para jugar con nosotros. *Real computers have real feelings.* '
+#		'**Me niego a participar.** Saben que? Mejor me v',
 	'retro':
 		'Para los que se acuerdan del Pompa Borges.',
-	'politica':
+	'política':
 		'¿Neofeudalistas? ¿Moderadores de /r/PITCNT? Todos son '
 		'bienvenidos en esta discusion **respetuosa** *(recordemos, '
 		'el dia de discusión-bardo no es hoy)*.',
@@ -47,19 +47,49 @@ topics = {
 		'esta semana?',
 	'poteland':
 		'Pongan lo que quieran y dejen que los votos hagan su trabajo.',
+	'programación':
+		'Programadores del mundo uníos. ¿En qué programás? ¿En qué querés '
+		'programar? ¿Qué bug te sacó canas verdes?',
+	'RANT':
+		'RANTEEN, CARAJO. LLEGÓ EL MOMENTO, NO SE GUARDEN NADA.'
 	}
 
 holidays = {
+	datetime.datetime(2018,1,1):
+		[
+		'año nuevo',
+		'Si ya incumplieron sus resoluciones de fin de año, bienvenidos '
+		'al club.'
+		],
+	datetime.datetime(2018,3,7):
+		[
+		'la independencia de /r/ROU',
+		'Hoy recordamos la sucesión de eventos que llevaron a la creación '
+		'de este espacio. ¡Felicidades a todos en este día tan especial!'
+		],
 	datetime.datetime(2018,3,8):
 		[
 		'la mujer',
-		'Dia internacional de la mujer. Celebremos a todas las mujeres, '
-		'el camino recorrido y el que queda por recorrer. Feliz '
+		'Día internacional de la mujer. \n\nCelebremos a todas las mujeres, '
+		'el camino recorrido y el que queda por recorrer. ¡Feliz '
 		'cumple [Juana](http://www.republica.com.uy/wp-content/uploads/'
 		'2015/10/dinero.jpg)!'
 		],
+	datetime.datetime(2018,5,1):
+		[
+		'los trabajadores',
+		'Día internacional de los trabajadores. \n\nLos esperamos a todos '
+		'para celebrar como se debe con un asado y un acto en /r/PITCNT.'
+		],
 	datetime.datetime(2018,8,24):
-		['la nostalgia',
+		[
+		'la nostalgia',
 		'[¿Qué hacen hoy gurisxs?](https://www.youtube.com/watch?v=CS9OO0S5w2k)'
+		],
+	datetime.datetime(2018,12,25):
+		[
+		'la familia',
+		'Felicidades para todos en este día de la familia. Disfruten con '
+		'responsabilidad de sus turrones. ¡Saludos!'
 		],
 	}
