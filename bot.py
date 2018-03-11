@@ -20,7 +20,7 @@ def load_log(log_path): #para los comentarios que ya respondi
 		return log
 
 def output_log(text): #lo uso para ver el output del bot
-	output_log_path = "/home/pi/Downloads/weeklyRandomUY/output_log.txt"
+	output_log_path = "output_log.txt"
 	with open(output_log_path, 'a') as myLog:
 		s = "[" +  datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "] "
 		s = s + text +  "\n"
@@ -46,7 +46,7 @@ if __name__ == "__main__":
 		'Domingo'
 		]
 
-	log_path = '/home/pi/Downloads/weeklyRandomUY/log.txt'
+	log_path = 'log.txt'
 
 	try:
 		output_log('Comenzando el script')
