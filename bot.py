@@ -26,13 +26,16 @@ def output_log(text): #lo uso para ver el output del bot
 		s = s + text +  "\n"
 		myLog.write(s)
 
-def is_today_holiday():
-	d = datetime.datetime.today().day
-	m = datetime.datetime.today().month
-	for date in weekly_topics.holidays.keys():
-		if date == (m, d)
+def is_date_holiday(date):
+	d = date.day
+	m = date.month
+	for date_key in weekly_topics.holidays.keys():
+		if date_key == (m, d)
 			return True, weekly_topics.holidays[date]
 	return False, None
+
+def is_today_holiday():
+	return is_date_holiday(datetime.datetime.today())
 
 if __name__ == "__main__":
 
