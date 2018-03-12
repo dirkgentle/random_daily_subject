@@ -30,7 +30,7 @@ def is_date_holiday(date):
 	d = date.day
 	m = date.month
 	for date_key in weekly_topics.holidays.keys():
-		if date_key == (m, d)
+		if date_key == (m, d):
 			return True, weekly_topics.holidays[date]
 	return False, None
 
