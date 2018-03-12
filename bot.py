@@ -30,7 +30,7 @@ def is_today_holiday():
 	d = datetime.datetime.today().day
 	m = datetime.datetime.today().month
 	for date in weekly_topics.holidays.keys():
-		if d == date.day and m == date.month:
+		if date == (m, d)
 			return True, weekly_topics.holidays[date]
 	return False, None
 
