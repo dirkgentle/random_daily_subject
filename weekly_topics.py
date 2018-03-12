@@ -61,6 +61,12 @@ holidays = { # Keys are in (month, day) format
 		'Si ya incumplieron sus resoluciones de fin de año, bienvenidos '
 		'al club.'
 		],
+	(1, 6):
+		[
+		'reyes',
+		'La monarquía pasa de moda, los regalos no.'
+		'¿Qué les regalaron?'
+		],
 	(3,7):
 		[
 		'la independencia de /r/ROU',
@@ -80,6 +86,16 @@ holidays = { # Keys are in (month, day) format
 		'los trabajadores',
 		'Día internacional de los trabajadores. \n\nLos esperamos a todos '
 		'para celebrar como se debe con un asado y un acto en /r/PITCNT.'
+		],
+	(6,19):
+		[
+		'Artigas',
+		'Hoy no se habla de nada, vayan a postear en /r/paraguay'
+		],
+	(7,18):
+		[
+		'la constitución',
+		'Un pedazo de papel. ¿Cuál es tu artículo favorito?'
 		],
 	(8,24):
 		[
