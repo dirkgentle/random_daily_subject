@@ -13,7 +13,7 @@ topics = {
 	'recomendaciones':
 		'Gaming, compras, series, etc.',
 	'lluvia':
-		'De ideas, no se alarmen. Discutamos como mejorar /r/ROU.',
+		'De ideas, no se alarmen. Discutamos como mejorar el sub.',
 	'emprendedor':
 		'Las cosas que hacemos como trabajo extra o a lo que nos '
 		'dedicamos full-time siempre y cuando sea por iniciativa '

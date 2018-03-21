@@ -79,7 +79,7 @@ if __name__ == "__main__":
 		body = body + "[Source](https://github.com/dirkgentle/random_daily_subject)."
 		output_log(title)
 		output_log(body)
-		reddit.subreddit('ROU').submit(title, selftext=body)
+		reddit.subreddit('Uruguay').submit(title, selftext=body)
 
 	except Exception as exception:
 		output_log(str(exception))
