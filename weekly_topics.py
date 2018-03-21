@@ -50,8 +50,8 @@ topics = {
 	'programación':
 		'Programadores del mundo uníos. ¿En qué programás? ¿En qué querés '
 		'programar? ¿Qué bug te sacó canas verdes?',
-	'RANT':
-		'RANTEEN, CARAJO. LLEGÓ EL MOMENTO, NO SE GUARDEN NADA.'
+#	'RANT':
+#		'RANTEEN, CARAJO. LLEGÓ EL MOMENTO, NO SE GUARDEN NADA.'
 	}
 
 holidays = { # Keys are in (month, day) format
