@@ -60,6 +60,9 @@ if __name__ == "__main__":
 		if is_holiday:
 			today = post[0]
 			body = post[1]
+		elif datetime.datetime.today().weekday() == 1: #Es martes?
+			today = "Rant!"
+			body = "**DALE BO ES MARTES!** \n\n ¿COMO NO SE ESTAN QUEJANDO YA? ¿TENGO QUE QUEJARME POR TODOS AHORA??? \n\n **(╯°□°）╯︵ ┻━┻)** "
 		else:
 			log = load_log(log_path)
 			while True:
