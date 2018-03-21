@@ -54,20 +54,26 @@ topics = {
 		'RANTEEN, CARAJO. LLEGÓ EL MOMENTO, NO SE GUARDEN NADA.'
 	}
 
-holidays = {
-	datetime.datetime(2018,1,1):
+holidays = { # Keys are in (month, day) format
+	(1,1):
 		[
 		'año nuevo',
 		'Si ya incumplieron sus resoluciones de fin de año, bienvenidos '
 		'al club.'
 		],
-	datetime.datetime(2018,3,7):
+	(1, 6):
+		[
+		'reyes',
+		'La monarquía pasa de moda, los regalos no.'
+		'¿Qué les regalaron?'
+		],
+	(3,7):
 		[
 		'la independencia de /r/ROU',
 		'Hoy recordamos la sucesión de eventos que llevaron a la creación '
 		'de este espacio. ¡Felicidades a todos en este día tan especial!'
 		],
-	datetime.datetime(2018,3,8):
+	(3,8):
 		[
 		'la mujer',
 		'Día internacional de la mujer. \n\nCelebremos a todas las mujeres, '
@@ -75,18 +81,28 @@ holidays = {
 		'cumple [Juana](http://www.republica.com.uy/wp-content/uploads/'
 		'2015/10/dinero.jpg)!'
 		],
-	datetime.datetime(2018,5,1):
+	(5,1):
 		[
 		'los trabajadores',
 		'Día internacional de los trabajadores. \n\nLos esperamos a todos '
 		'para celebrar como se debe con un asado y un acto en /r/PITCNT.'
 		],
-	datetime.datetime(2018,8,24):
+	(6,19):
+		[
+		'Artigas',
+		'Hoy no se habla de nada, vayan a postear en /r/paraguay'
+		],
+	(7,18):
+		[
+		'la constitución',
+		'Un pedazo de papel. ¿Cuál es tu artículo favorito?'
+		],
+	(8,24):
 		[
 		'la nostalgia',
 		'[¿Qué hacen hoy gurisxs?](https://www.youtube.com/watch?v=CS9OO0S5w2k)'
 		],
-	datetime.datetime(2018,12,25):
+	(12,25):
 		[
 		'la familia',
 		'Felicidades para todos en este día de la familia. Disfruten con '
