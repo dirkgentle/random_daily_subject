@@ -1,4 +1,6 @@
 login.py
 *.pyc
+*.save
 log.txt
 output_log.txt
+launcher.sh
