@@ -55,6 +55,10 @@ topics = {
     'salud mental':
         'Algo lindo que te haya pasado. ¿Cuáles son tus planes a futuro? '
         '¿Qué te hizo feliz hoy?',
+    'ignorancia':
+        'No hay preguntas boludas. Es tu chance de preguntar [**eso**] '
+        '(https://youtu.be/c4lCMa73r_I?t=24) que te está matando hace rato.'
+        ' *No te preocupes, yo tampoco sé quien es el Pompa Borges*.',
 	}
 
 holidays = { # Keys are in (month, day) format
