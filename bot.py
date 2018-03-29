@@ -33,17 +33,18 @@ def is_date_holiday(date):
 def is_today_holiday():
     return is_date_holiday(datetime.datetime.today())
 
-if __name__ == "__main__":
+days = [
+    'Lunes',
+    'Martes',
+    'Miercoles',
+    'Jueves',
+    'Viernes',
+    'Sabado',
+    'Domingo'
+    ]
 
-    days = [
-        'Lunes',
-        'Martes',
-        'Miercoles',
-        'Jueves',
-        'Viernes',
-        'Sabado',
-        'Domingo'
-        ]
+
+if __name__ == "__main__":
 
     log_path = 'log.txt'
 
@@ -61,8 +62,14 @@ if __name__ == "__main__":
             today = post[0]
             body = post[1]
         elif datetime.datetime.today().weekday() == 1: #Es martes?
-            today = "Rant!"
-            body = "**DALE BO ES MARTES!** \n\n ¿COMO NO SE ESTAN QUEJANDO YA? ¿TENGO QUE QUEJARME POR TODOS AHORA??? \n\n **(╯°□°）╯︵ ┻━┻)** "
+            today = "RANT"
+            body = ("**DALE BO ES MARTES!** \n\n ¿COMO NO SE ESTAN QUEJANDO " 
+                "YA? ¿TENGO QUE QUEJARME POR TODOS AHORA??? \n\n "
+                "**(╯°□°）╯︵ ┻━┻)** ")
+        elif datetime.datetime.today().day == 29:
+            today = "ñoquis"
+            body = ("Sus experiencias con el estado uruguayo. "
+                "O podemos hablar de pasta. Como ustedes quieran.")
         else:
             log = load_log(log_path)
             while True:
