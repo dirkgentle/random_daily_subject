@@ -59,6 +59,10 @@ topics = {
         'No hay preguntas boludas. Es tu chance de preguntar [**eso**] '
         '(https://youtu.be/c4lCMa73r_I?t=24) que te está matando hace rato.'
         ' *No te preocupes, yo tampoco sé quien es el Pompa Borges*.',
+     'arte':
+        '¡Dale!, saca todos tus proyectos artisticos a la luz. '
+        'Spamea todo tu arte en este post: '
+        'Musica, arte plastico, chistes, todo lo que sea OC.',
     }
 
 holidays = { # Keys are in (month, day) format
