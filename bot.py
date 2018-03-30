@@ -73,7 +73,7 @@ if __name__ == "__main__":
         else:
             log = load_log(log_path)
             while True:
-                today = random.choice(list(weekly_topics.topics.keys()))
+                today = random.SystemRandom().choice(list(weekly_topics.topics.keys()))
                 if today not in log[-6:]:
                     break
             body = weekly_topics.topics[today]
