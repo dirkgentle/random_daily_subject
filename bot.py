@@ -2,6 +2,7 @@ import random
 import datetime
 import time
 import traceback
+import sys, getopt
 
 import praw
 
@@ -47,6 +48,16 @@ days = [
 if __name__ == "__main__":
 
     log_path = 'log.txt'
+    debug_mode = False
+
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], 'd', 'debug')
+    except getopt.GetoptError:
+        print('bot.py -d')
+        sys.exit(2)
+    for opt, arg in opts:
+        if opt in ('-d', '--debug'):
+            debug_mode = True
 
     try:
         output_log('Comenzando el script')
@@ -77,7 +88,10 @@ if __name__ == "__main__":
                 if today not in log[-6:]:
                     break
             body = weekly_topics.topics[today]
-        update_log(today, log_path)
+        if not debug_mode:
+            update_log(today, log_path)
+        else:
+            print(today)
 
         title = days[datetime.datetime.today().weekday()] \
                 + ' de ' + today + '.'
@@ -86,7 +100,8 @@ if __name__ == "__main__":
         body = body + "[Source](https://github.com/dirkgentle/random_daily_subject)."
         output_log(title)
         output_log(body)
-        reddit.subreddit('Uruguay').submit(title, selftext=body)
+        if not debug_mode:
+            reddit.subreddit('Uruguay').submit(title, selftext=body)
 
     except Exception as exception:
         output_log(str(exception))
