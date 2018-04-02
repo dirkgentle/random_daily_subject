@@ -3,6 +3,7 @@ import datetime
 import time
 import traceback
 import sys, getopt
+import sqlite3
 
 import praw
 
@@ -10,15 +11,25 @@ import login
 import weekly_topics
 
 
-def update_log(id, log_path): #para los comentarios que ya respondi
-    with open(log_path, 'a') as my_log:
-            my_log.write(id + "\n")
+def update_log(title, log_path): #para los comentarios que ya respondi
+    conn = sqlite3.connect(log_path)
+    c = conn.cursor()
+    c.execute(
+        'INSERT INTO submitted VALUES (NULL, ?, ?, ?)',
+        (datetime.datetime.now(), datetime.date.today().weekday(), title))
+    conn.commit()
+    c.close()
 
-def load_log(log_path): #para los comentarios que ya respondi
-    with open(log_path) as my_log:
-        log = my_log.readlines()
-        log = [x.strip('\n') for x in log]
-        return log
+
+def load_log(log_path, limit): #para los comentarios que ya respondi
+    conn = sqlite3.connect(log_path)
+    c = conn.cursor()
+    c.execute(
+        'SELECT title FROM submitted ORDER BY DATETIME(date) DESC LIMIT ?',
+        (str(limit,)))
+    log = [x[0] for x in c.fetchall()]
+    c.close()
+    return log
 
 def output_log(text): #lo uso para ver el output del bot
     output_log_path = "output_log.txt"
@@ -47,7 +58,8 @@ days = [
 
 if __name__ == "__main__":
 
-    log_path = 'log.txt'
+    log_path = 'topics.db'
+    log_limit = 6
     debug_mode = False
 
     try:
@@ -82,16 +94,18 @@ if __name__ == "__main__":
             body = ("Sus experiencias con el estado uruguayo. "
                 "O podemos hablar de pasta. Como ustedes quieran.")
         else:
-            log = load_log(log_path)
+            log = load_log(log_path, log_limit)
             while True:
                 today = random.SystemRandom().choice(list(weekly_topics.topics.keys()))
-                if today not in log[-6:]:
+                if today not in log:
                     break
             body = weekly_topics.topics[today]
         if not debug_mode:
             update_log(today, log_path)
         else:
-            print(today)
+            update_log(today, log_path)
+            print('Log: ' + str(log))
+            print('Today: ' + today)
 
         title = days[datetime.datetime.today().weekday()] \
                 + ' de ' + today + '.'
@@ -106,3 +120,5 @@ if __name__ == "__main__":
     except Exception as exception:
         output_log(str(exception))
         output_log(traceback.format_exc())
+        if debug_mode:
+            raise(exception)
