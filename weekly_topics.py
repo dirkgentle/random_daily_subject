@@ -32,10 +32,10 @@ topics = {
         'mayhem, aca es donde contarlo.',
     'discusion-bardo':
         '[UR MOM GAY](https://www.youtube.com/watch?v=JVAPMAELQOg)',
-#   'gaming':
-#       'En realidad me parece degradante que los humanos nos usen '
-#       'para jugar con nosotros. *Real computers have real feelings.* '
-#       '**Me niego a participar.** Saben que? Mejor me v',
+    'gaming':
+        'En realidad me parece degradante que los humanos nos usen '
+        'para jugar con nosotros. *Real computers have real feelings.* '
+        '**Me niego a participar.** Saben que? Mejor me v',
     'retro':
         'Para los que se acuerdan del Pompa Borges.',
     'política':
@@ -59,10 +59,27 @@ topics = {
         'No hay preguntas boludas. Es tu chance de preguntar [**eso**] '
         '(https://youtu.be/c4lCMa73r_I?t=24) que te está matando hace rato.'
         ' *No te preocupes, yo tampoco sé quien es el Pompa Borges*.',
-     'arte':
+    'arte':
         '¡Dale!, saca todos tus proyectos artísticos a la luz. '
         'Spamea todo tu arte en este post: '
-        'Música, arte plástico, chistes, todo lo que sea OC.',
+        'Música, arte plástico, chistes, todo lo que sea OC.\n\n'
+        'Recordemos ser amables con quienes vienen a compartir sus creaciones. '
+        'Las críticas constructivas son bienvenidas, el trolleo o las '
+        'groserías innecesarias no.',
+    'fun facts':
+        'Las trivialidades que aprendimos comiendo palitos de la selva, '
+        'jugando al trivial pursuit o simplemente de casualidad. '
+        '¡Vale refutar!',
+    'deportes':
+        'Yo sé que a la mayoría le gusta el [fúbol]'
+        '(http://tribune-intl.com/wp-content/uploads/2015/07/'
+        'Robocup01-1140x641.jpg)'
+        ', pero no nos quedemos solo en esa. Hay [muchos]'
+        '(http://mysportsclipart.com/1024/sports-clip-art-of-a-3d-robot-'
+        'hitting-a-tennis-ball-by-kj-pargeter-6510.jpg) [más]'
+        '(http://www.poeghostal.com/wp-content/uploads/2008/11/dscf0012.jpg)'
+        ' [deportes](https://i.pinimg.com/474x/7b/7a/66/7b7a66ea862e6c5541153'
+        '11759b3a127--robots-sports.jpg).'
     }
 
 holidays = { # Keys are in (month, day) format
