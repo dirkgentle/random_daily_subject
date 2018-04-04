@@ -9,6 +9,7 @@ def up_db(db_name):
     clean_db(db_name)
     load_topics(db_name)
 
+
 def create_db(db_name):
     conn = sqlite3.connect(db_name)
     c = conn.cursor()
@@ -47,7 +48,8 @@ def create_db(db_name):
     conn.commit()
     c.close()
 
-def load_topics(db_name):
+
+def load_topics(db_name): #from weeky_topics.py
     conn = sqlite3.connect(db_name)
     c = conn.cursor()
 
@@ -73,6 +75,7 @@ def load_topics(db_name):
     conn.commit()
     c.close()
 
+
 def update_title(cursor, title, is_holiday, is_special):
     cursor.execute('SELECT * FROM titles WHERE title=?', (title,))
     db_topic = cursor.fetchone()
@@ -83,6 +86,7 @@ def update_title(cursor, title, is_holiday, is_special):
         cursor.execute('UPDATE titles SET is_active=1 WHERE id=?',
             (db_topic[0]))
     return cursor.lastrowid
+
 
 def update_body(cursor, body, title_id):
     cursor.execute('SELECT * FROM bodies WHERE title_id=?', (title_id,))
@@ -95,8 +99,53 @@ def update_body(cursor, body, title_id):
             (db_body[0]))
 
 
-#db cleaning
+def update_submitted(cursor, title_id, body_id=None):
+    cursor.execute('INSERT INTO submitted VALUES (NULL, ?, ?, ?, ?)',
+        (datetime.datetime.now(),datetime.date.today().weekday(),title_id,
+         body_id,))
 
+
+#db reading
+def is_date_holiday(cursor, date):
+    cursor.execute('SELECT title_id FROM holidays WHERE (day,month)=(?,?)',
+        (date.day, date.month,))
+    return cursor.fetchone()
+
+def is_today_holiday(cursor):
+    return is_date_holiday(cursor, datetime.datetime.today())
+
+def get_latest_submissions(cursor, n=6):
+    cursor.execute(
+        'SELECT title_id FROM submitted ORDER BY DATETIME(date) DESC LIMIT ?',
+        (str(n)))
+    return cursor.fetchall()
+
+def get_title(cursor, title_id):
+    cursor.execute('SELECT title FROM titles WHERE id=?', (title_id,))
+    return cursor.fetchone()
+
+def get_random_submission(cursor):
+    [title_id, title] = get_random_title(cursor)
+    [body_id, body] = get_random_body(cursor, title_id)
+    return (title_id, title, body_id, body)
+
+def get_random_title(cursor):
+    cursor.execute(
+        '''SELECT id, title FROM titles
+            WHERE is_holiday = 0 AND is_special = 0 AND is_active != 0
+            ORDER BY RANDOM() LIMIT 1''',)
+    return cursor.fetchone()
+
+def get_random_body(cursor, title_id):
+    cursor.execute(
+        '''SELECT id, body FROM bodies
+            WHERE title_id = ? AND is_active != 0
+            ORDER BY RANDOM() LIMIT 1''',
+            (str(title_id),))
+    return cursor.fetchone()
+
+
+#db cleaning
 def clean_db(db_name):
     clean_titles(db_name)
     clean_bodies(db_name)
