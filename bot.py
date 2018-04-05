@@ -65,26 +65,24 @@ if __name__ == "__main__":
 
         title_id = db_handler.is_today_holiday(c)
         if title_id:
-            today = db_handler.get_title(c, title_id)
+            title_id = title_id[0]
+            today = db_handler.get_title(c, title_id)[0]
             [body, body_id] = db_handler.get_random_body(c, title_id)
         elif datetime.datetime.today().weekday() == 1: #Es martes?
-            # TODO: use db
             today = "RANT"
-            body = ("**DALE BO ES MARTES!** \n\n ¿COMO NO SE ESTAN QUEJANDO " 
-                "YA? ¿TENGO QUE QUEJARME POR TODOS AHORA??? \n\n "
-                "**(╯°□°）╯︵ ┻━┻)** ")
+            title_id = db_handler.get_title_id(c, today)
         elif datetime.datetime.today().day == 29:
-            # TODO: use db
             today = "ñoquis"
-            body = ("Sus experiencias con el estado uruguayo. "
-                "O podemos hablar de pasta. Como ustedes quieran.")
+            title_id = db_handler.get_title_id(c, today)
         else:
             log = load_log(c, log_limit)
             while True:
                 [title_id, today] = db_handler.get_random_title(c)
                 if title_id not in log:
                     break
-            [body_id, body] = db_handler.get_random_body(c, title_id)
+
+        [body_id, body] = db_handler.get_random_body(c, title_id)
+
         if not debug_mode:
             update_log(c, title_id, body_id)
         else:

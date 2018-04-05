@@ -5,15 +5,17 @@ import weekly_topics
 
 
 def up_db(db_name):
-    create_db(db_name)
-    clean_db(db_name)
-    load_topics(db_name)
-
-
-def create_db(db_name):
     conn = sqlite3.connect(db_name)
     c = conn.cursor()
 
+    create_tables_db(c)
+    clean_db(c)
+    load_topics(c)
+
+    conn.commit()
+    c.close()
+
+def create_tables_db(c):
     c.execute('''CREATE TABLE IF NOT EXISTS titles (
         id INTEGER PRIMARY KEY,
         title TEXT NOT NULL,
@@ -44,14 +46,9 @@ def create_db(db_name):
         title_id INTEGER NOT NULL,
         FOREIGN KEY(title_id) REFERENCES titles(id)
         )''')
- 
-    conn.commit()
-    c.close()
 
 
-def load_topics(db_name): #from weeky_topics.py
-    conn = sqlite3.connect(db_name)
-    c = conn.cursor()
+def load_topics(c): #from weeky_topics.py
 
     for topic in weekly_topics.topics.keys():
         title_id = update_title(c, topic, 0, 0)
@@ -72,10 +69,8 @@ def load_topics(db_name): #from weeky_topics.py
         for body in weekly_topics.special_days[topic]:
             update_body(c, body, title_id)
 
-    conn.commit()
-    c.close()
 
-
+# update the database
 def update_title(cursor, title, is_holiday, is_special):
     cursor.execute('SELECT * FROM titles WHERE title=?', (title,))
     db_topic = cursor.fetchone()
@@ -122,6 +117,11 @@ def get_latest_submissions(cursor, n=6):
 
 def get_title(cursor, title_id):
     cursor.execute('SELECT title FROM titles WHERE id=?', (title_id,))
+    return cursor.fetchone()
+
+def get_title_id(cursor, title):
+    cursor.execute('SELECT id FROM titles WHERE title LIKE ?',
+        (title,))
     return cursor.fetchone()
 
 def get_random_submission(cursor):
