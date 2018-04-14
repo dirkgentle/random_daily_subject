@@ -48,7 +48,7 @@ def create_tables_db(c):
         )''')
 
 
-def load_topics(c): #from weeky_topics.py
+def load_topics(c):
     # c is the db cursor
 
     json_data = open('topics/topics.json').read()
@@ -73,7 +73,6 @@ def load_topics(c): #from weeky_topics.py
         for body in topic.get('bodies'):
             update_body(c, body, topic['id'])
 
-
 # update the database
 def update_title(cursor, topic, is_holiday=0, is_special=0):
     cursor.execute('SELECT is_active FROM titles WHERE id=?', (topic['id'],))
@@ -89,10 +88,15 @@ def update_title(cursor, topic, is_holiday=0, is_special=0):
             )
         )
     elif db_topic[0] == 0:
-        cursor.execute('UPDATE titles SET is_active=1 WHERE id=?',
-            (topic['id']))
+        cursor.execute('''UPDATE titles SET
+            title=?,is_holiday=?,is_special=?,is_active=1 WHERE id=?''', (
+                topic['title'],
+                is_holiday,
+                is_special,
+                topic['id']
+            )
+        )
     return cursor.lastrowid
-
 
 def update_body(cursor, body, title_id):
     cursor.execute('SELECT is_active FROM bodies WHERE id=?', (body['id'],))
@@ -101,9 +105,13 @@ def update_body(cursor, body, title_id):
         cursor.execute('INSERT INTO bodies VALUES (?, ?, ?, ?, 1)',
             (body['id'], body['text'], body['count'], title_id))
     elif db_body[0] == 0:
-        cursor.execute('UPDATE bodies SET is_active=1 WHERE id=?',
-            (body['id']))
-
+        cursor.execute('''UPDATE bodies SET
+            text=?,title_id=?,is_active=1 WHERE id=?''', (
+                body['text'],
+                title_id,
+                body['id']
+            )
+        )
 
 def update_submitted(cursor, title_id, body_id=None):
     cursor.execute('INSERT INTO submitted VALUES (NULL, ?, ?, ?, ?)',
