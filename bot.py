@@ -11,14 +11,17 @@ import login
 import db_handler
 
 
-def update_log(cursor, title_id, comment_id): #para los comentarios que ya respondi
+def update_log(cursor, title_id, comment_id):
+    # para los comentarios que ya respondi
     db_handler.update_submitted(cursor, title_id, comment_id)
 
-def load_log(cursor, limit): #para los comentarios que ya respondi
+def load_log(cursor, limit):
+    # para los comentarios que ya respondi
     aux = db_handler.get_latest_submissions(cursor, limit)
     return [x[0] for x in aux]
 
-def output_log(text): #lo uso para ver el output del bot
+def output_log(text):
+    # lo uso para ver el output del bot
     output_log_path = "output_log.txt"
     with open(output_log_path, 'a') as myLog:
         s = "[" +  datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "] "
@@ -69,11 +72,9 @@ if __name__ == "__main__":
             today = db_handler.get_title(c, title_id)[0]
             [body, body_id] = db_handler.get_random_body(c, title_id)
         elif datetime.datetime.today().weekday() == 1: #Es martes?
-            today = "RANT"
-            title_id = db_handler.get_title_id(c, today)
+            title_id = 'rant'
         elif datetime.datetime.today().day == 29:
-            today = "ñoquis"
-            title_id = db_handler.get_title_id(c, today)
+            title_id = 'noqui'
         else:
             log = load_log(c, log_limit)
             while True:

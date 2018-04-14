@@ -1,7 +1,6 @@
 import sqlite3
 import datetime
-
-import weekly_topics
+import json
 
 
 def up_db(db_name):
@@ -17,87 +16,111 @@ def up_db(db_name):
 
 def create_tables_db(c):
     c.execute('''CREATE TABLE IF NOT EXISTS titles (
-        id INTEGER PRIMARY KEY,
+        id TEXT PRIMARY KEY,
         title TEXT NOT NULL,
+        count INTEGER,
         is_holiday INTEGER,
         is_special INTEGER,
         is_active INTEGER
         )''') # is_xxx == 0 if not xxx, true for other cases
     c.execute('''CREATE TABLE IF NOT EXISTS bodies (
-        id INTEGER PRIMARY KEY,
+        id TEXT PRIMARY KEY,
         body TEXT NOT NULL,
+        count INTEGER,
         title_id INTEGER NOT NULL,
         is_active INTEGER,
         FOREIGN KEY(title_id) REFERENCES titles(id)
         )''')
     c.execute('''CREATE TABLE IF NOT EXISTS submitted (
-        id INTEGER PRIMARY KEY,
+        id TEXT PRIMARY KEY,
         date TEXT NOT NULL,
         weekday INTEGER,
-        title_id INTEGER NOT NULL,
-        body_id INTEGER,
+        title_id TEXT NOT NULL,
+        body_id TEXT,
         FOREIGN KEY(title_id) REFERENCES titles(id),
         FOREIGN KEY(body_id) REFERENCES bodies(id)
         )''')
     c.execute('''CREATE TABLE IF NOT EXISTS holidays (
-        id INTEGER PRIMARY KEY,
+        title_id TEXT PRIMARY KEY,
         day INTEGER NOT NULL,
         month INTEGER,
-        title_id INTEGER NOT NULL,
         FOREIGN KEY(title_id) REFERENCES titles(id)
         )''')
 
 
 def load_topics(c): #from weeky_topics.py
+    # c is the db cursor
 
-    for topic in weekly_topics.topics.keys():
-        title_id = update_title(c, topic, 0, 0)
-        for body in weekly_topics.topics[topic]:
-            update_body(c, body, title_id)
+    json_data = open('topics/topics.json').read()
+    topics = json.loads(json_data)
+    for topic in topics:
+        update_title(c, topic)
+        for body in topic.get('bodies'):
+            update_body(c, body, topic['id'])
 
-    for day, month in weekly_topics.holidays.keys():
-        title = weekly_topics.holidays[(day,month)][0]
-        body = weekly_topics.holidays[(day,month)][1]
+    json_data = open('topics/holidays.json').read()
+    holidays = json.loads(json_data)
+    for topic in holidays:
+        update_title(c, topic, 1)
+        update_holiday(c, topic)
+        for body in topic.get('bodies'):
+            update_body(c, body, topic['id'])
 
-        title_id = update_title(c, title, 1, 0)
-        update_body(c, body, title_id)
-        c.execute('INSERT INTO holidays VALUES (NULL, ?, ?, ?)',
-            (day, month, title_id))
-
-    for topic in weekly_topics.special_days.keys():
-        title_id = update_title(c, topic, 0, 1)
-        for body in weekly_topics.special_days[topic]:
-            update_body(c, body, title_id)
+    json_data = open('topics/special_days.json').read()
+    special_days = json.loads(json_data)
+    for topic in special_days:
+        update_title(c, topic, 0, 1)
+        for body in topic.get('bodies'):
+            update_body(c, body, topic['id'])
 
 
 # update the database
-def update_title(cursor, title, is_holiday, is_special):
-    cursor.execute('SELECT * FROM titles WHERE title=?', (title,))
+def update_title(cursor, topic, is_holiday=0, is_special=0):
+    cursor.execute('SELECT is_active FROM titles WHERE id=?', (topic['id'],))
     db_topic = cursor.fetchone()
     if not db_topic:
-        cursor.execute('INSERT INTO titles VALUES (NULL, ?, ?, ?, 1)',
-            (title, is_holiday, is_special))
-    elif db_topic[4] == 0:
+        cursor.execute(
+            'INSERT INTO titles VALUES (?, ?, ?, ?, ?, 1)', (
+                topic['id'],
+                topic['title'],
+                topic['count'],
+                is_holiday,
+                is_special
+            )
+        )
+    elif db_topic[0] == 0:
         cursor.execute('UPDATE titles SET is_active=1 WHERE id=?',
-            (db_topic[0]))
+            (topic['id']))
     return cursor.lastrowid
 
 
 def update_body(cursor, body, title_id):
-    cursor.execute('SELECT * FROM bodies WHERE title_id=?', (title_id,))
+    cursor.execute('SELECT is_active FROM bodies WHERE id=?', (body['id'],))
     db_body = cursor.fetchone()
     if not db_body:
-        cursor.execute('INSERT INTO bodies VALUES (NULL, ?, ?, 1)',
-            (body, title_id))
-    elif db_body[3] == 0:
+        cursor.execute('INSERT INTO bodies VALUES (?, ?, ?, ?, 1)',
+            (body['id'], body['text'], body['count'], title_id))
+    elif db_body[0] == 0:
         cursor.execute('UPDATE bodies SET is_active=1 WHERE id=?',
-            (db_body[0]))
+            (body['id']))
 
 
 def update_submitted(cursor, title_id, body_id=None):
     cursor.execute('INSERT INTO submitted VALUES (NULL, ?, ?, ?, ?)',
         (datetime.datetime.now(),datetime.date.today().weekday(),title_id,
          body_id,))
+    cursor.execute('UPDATE titles SET count = count + 1 WHERE id=?',
+        (title_id,))
+    if body_id:
+        cursor.execute('UPDATE bodies SET count = count + 1 WHERE id=?',
+            (body_id,))
+
+def update_holiday(cursor, topic):
+    cursor.execute('SELECT * FROM holidays WHERE title_id=?', (topic['id'],))
+    db_topic = cursor.fetchone()
+    if not db_topic:
+        cursor.execute('INSERT INTO holidays VALUES (?, ?, ?)',
+            (topic['id'], topic['day'], topic['month'],))
 
 
 #db reading
@@ -146,45 +169,54 @@ def get_random_body(cursor, title_id):
 
 
 #db cleaning
-def clean_db(db_name):
-    clean_titles(db_name)
-    clean_bodies(db_name)
+def clean_db(c):
+    # c is a db cursor
+    clean_titles(c)
+    clean_bodies(c)
 
-def clean_titles(db_name):
-    all_keys = list(weekly_topics.topics)
-    all_keys += [x[0] for x in weekly_topics.holidays.values()]
-    all_keys += list(weekly_topics.special_days)
+def clean_titles(c):
+    # c is a db cursor
+    all_keys = []
+
+    json_data = open('topics/topics.json').read()
+    topics = json.loads(json_data)
+    all_keys += [topic['id'] for topic in topics]
+
+    json_data = open('topics/holidays.json').read()
+    topics = json.loads(json_data)
+    all_keys += [topic['id'] for topic in topics]
     
-    conn = sqlite3.connect(db_name)
-    c = conn.cursor()
+    json_data = open('topics/special_days.json').read()
+    topics = json.loads(json_data)
+    all_keys += [topic['id'] for topic in topics]
 
-    c.execute('SELECT id,title FROM titles WHERE is_active!=0')
-    titles = c.fetchall()
-    for title in titles:
-        if title[1] not in all_keys:
-            c.execute('UPDATE titles SET is_active=0 WHERE id=?', (title[0],))
+    c.execute('SELECT id FROM titles WHERE is_active!=0')
+    title_ids = c.fetchall()
+    for title_id in title_ids:
+        if title_id  not in all_keys:
+            c.execute('UPDATE titles SET is_active=0 WHERE id=?', (title_id,))
 
-    conn.commit()
-    c.close()
+def clean_bodies(c):
+    #c is a db cursor
+    all_bodies = []
 
-def clean_bodies(db_name): 
-    all_bodies = [body for bodies in weekly_topics.topics.values()
-                       for body in bodies]
-    all_bodies += [x[1] for x in weekly_topics.holidays.values()]
-    all_bodies += [body for bodies in weekly_topics.special_days.values()
-                        for body in bodies]
+    json_data = open('topics/topics.json').read()
+    topics = json.loads(json_data)
+    all_bodies += [body['id'] for topic in topics for body in topic['bodies']]
     
-    conn = sqlite3.connect(db_name)
-    c = conn.cursor()
+    json_data = open('topics/holidays.json').read()
+    topics = json.loads(json_data)
+    all_bodies += [body['id'] for topic in topics for body in topic['bodies']]
+
+    json_data = open('topics/special_days.json').read()
+    topics = json.loads(json_data)
+    all_bodies += [body['id'] for topic in topics for body in topic['bodies']]
 
     c.execute('SELECT id,body FROM bodies WHERE is_active!=0')
     bodies = c.fetchall()
     for body in bodies:
         if body[1] not in all_bodies:
             c.execute('UPDATE bodies SET is_active=0 WHERE id=?', (body[0],))
-
-    conn.commit()
-    c.close()
 
 #para imprimir la base de datos en pantalla
 def print_tables(db_name, table_name):
@@ -239,35 +271,6 @@ def print_submitted(db_name):
             c.execute('SELECT body FROM bodies WHERE id=?', (submission[4],))
             print(c.fetchone()[0])
     print('***************')
-
-    conn.commit()
-    c.close()
-
-
-# Para migrar los datos viejos
-def migrate_log_to_db(log_path, db_name, already_posted_today):
-    with open(log_path) as old_log:
-        log = [x.strip('\n') for x in old_log.readlines()]
-    log = reversed(log)
-
-    conn = sqlite3.connect(db_name)
-    c = conn.cursor()
-    
-    for i, topic in enumerate(log):
-        print(topic)
-        c.execute('SELECT id FROM titles WHERE title=?',(topic,))
-        title_id = c.fetchone()[0]
-        c.execute('SELECT id FROM bodies WHERE title_id=?',(title_id,))
-        body_id = c.fetchall()[0][0]
-
-        if already_posted_today:
-            topic_date = (datetime.date.today() - datetime.timedelta(days=i))
-        else:
-            topic_date = (datetime.date.today() - datetime.timedelta(days=i+1))
-        topic_weekday = topic_date.weekday()
-
-        c.execute('INSERT INTO submitted VALUES (NULL, ?, ?, ?, ?)',
-            (topic_date, topic_weekday, title_id , body_id))
 
     conn.commit()
     c.close()
