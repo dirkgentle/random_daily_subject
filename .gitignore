@@ -1,6 +1,7 @@
 login.py
 *.pyc
 *.save
+*.db
 log.txt
 output_log.txt
 launcher.sh

@@ -1,0 +1,162 @@
+[
+    {
+        "id": "nwyr",
+        "title": "año nuevo",
+        "count": 0,
+        "is_active": true,
+        "day": 1,
+        "month": 1,
+        "bodies": [
+            {
+                "id": "nwyr-01",
+                "count": 0,
+                "is_active": true,
+                "text": "Si ya incumplieron sus resoluciones de fin de año, bienvenidos al club."
+            }
+        ]
+    },
+    {
+        "id": "reyes",
+        "title": "año nuevo",
+        "count": 0,
+        "is_active": true,
+        "day": 6,
+        "month": 1,
+        "bodies": [
+            {
+                "id": "reyes-01",
+                "count": 0,
+                "is_active": true,
+                "text": "La monarquía pasa de moda, los regalos no. ¿Qué les regalaron?"
+            }
+        ]
+    },
+    {
+        "id": "rou",
+        "title": "la independencia de /r/ROU",
+        "count": 0,
+        "is_active": true,
+        "day": 7,
+        "month": 3,
+        "bodies": [
+            {
+                "id": "rou-01",
+                "count": 0,
+                "is_active": true,
+                "text": "Hoy recordamos la sucesión de eventos que llevaron a la creación de este espacio. ¡Felicidades a todos en este día tan especial!"
+            }
+        ]
+    },
+    {
+        "id": "wmns",
+        "title": "la mujer",
+        "count": 0,
+        "is_active": true,
+        "day": 8,
+        "month": 3,
+        "bodies": [
+            {
+                "id": "wmns-01",
+                "count": 0,
+                "is_active": true,
+                "text": "Día internacional de la mujer. \n\nCelebremos a todas las mujeres, el camino recorrido y el que queda por recorrer. ¡Feliz cumple [Juana](http://www.republica.com.uy/wp-content/uploads/2015/10/dinero.jpg)!"
+            }
+        ]
+    },
+    {
+        "id": "orntl",
+        "title": "los Treintan y Tres",
+        "count": 0,
+        "is_active": true,
+        "day": 19,
+        "month": 4,
+        "bodies": [
+            {
+                "id": "orntl-01",
+                "count": 0,
+                "is_active": true,
+                "text": "Ni treinta y tres, ni orientales. Libertad O Muerte, tho. Por suerte no eran [ellos.](https://www.youtube.com/watch?v=W_ZLGb-BNsI)"
+            }
+        ]
+    },
+    {
+        "id": "wrkrs",
+        "title": "los trabajadores",
+        "count": 0,
+        "is_active": true,
+        "day": 1,
+        "month": 5,
+        "bodies": [
+            {
+                "id": "wrkrs-01",
+                "count": 0,
+                "is_active": true,
+                "text": "Día internacional de los trabajadores. \n\nLos esperamos a todos para celebrar como se debe con un asado y un acto en /r/PITCNT."
+            }
+        ]
+    },
+    {
+        "id": "artgs",
+        "title": "Artigas",
+        "count": 0,
+        "is_active": true,
+        "day": 19,
+        "month": 6,
+        "bodies": [
+            {
+                "id": "artgs-01",
+                "count": 0,
+                "is_active": true,
+                "text": "Hoy no se habla de nada, vayan a postear en /r/paraguay"
+            }
+        ]
+    },
+    {
+        "id": "csttn",
+        "title": "la constitución",
+        "count": 0,
+        "is_active": true,
+        "day": 18,
+        "month": 7,
+        "bodies": [
+            {
+                "id": "csttn-01",
+                "count": 0,
+                "is_active": true,
+                "text": "Un pedazo de papel. ¿Cuál es tu artículo favorito?"
+            }
+        ]
+    },
+    {
+        "id": "nstlg",
+        "title": "la nostalgia",
+        "count": 0,
+        "is_active": true,
+        "day": 24,
+        "month": 8,
+        "bodies": [
+            {
+                "id": "nstlg-01",
+                "count": 0,
+                "is_active": true,
+                "text": "[¿Qué hacen hoy gurisxs?](https://www.youtube.com/watch?v=CS9OO0S5w2k)"
+            }
+        ]
+    },
+    {
+        "id": "nvdd",
+        "title": "la familia",
+        "count": 0,
+        "is_active": true,
+        "day": 25,
+        "month": 12,
+        "bodies": [
+            {
+                "id": "nvdd-01",
+                "count": 0,
+                "is_active": true,
+                "text": "Felicidades para todos en este día de la familia. Disfruten con responsabilidad de sus turrones. ¡Saludos!"
+            }
+        ]
+    }
+] 

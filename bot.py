@@ -3,36 +3,30 @@ import datetime
 import time
 import traceback
 import sys, getopt
+import sqlite3
 
 import praw
 
 import login
-import weekly_topics
+import db_handler
 
 
-def update_log(id, log_path): #para los comentarios que ya respondi
-    with open(log_path, 'a') as my_log:
-            my_log.write(id + "\n")
+def update_log(cursor, title_id, comment_id):
+    # para los comentarios que ya respondi
+    db_handler.update_submitted(cursor, title_id, comment_id)
 
-def load_log(log_path): #para los comentarios que ya respondi
-    with open(log_path) as my_log:
-        log = my_log.readlines()
-        log = [x.strip('\n') for x in log]
-        return log
+def load_log(cursor, limit):
+    # para los comentarios que ya respondi
+    aux = db_handler.get_latest_submissions(cursor, limit)
+    return [x[0] for x in aux]
 
-def output_log(text): #lo uso para ver el output del bot
+def output_log(text):
+    # lo uso para ver el output del bot
     output_log_path = "output_log.txt"
     with open(output_log_path, 'a') as myLog:
         s = "[" +  datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "] "
         s = s + text +  "\n"
         myLog.write(s)
-
-def is_date_holiday(date):
-    key = (date.month, date.day)
-    return (key in weekly_topics.holidays), weekly_topics.holidays.get(key)
-
-def is_today_holiday():
-    return is_date_holiday(datetime.datetime.today())
 
 days = [
     'Lunes',
@@ -47,7 +41,8 @@ days = [
 
 if __name__ == "__main__":
 
-    log_path = 'log.txt'
+    log_path = 'topics.db'
+    log_limit = 6
     debug_mode = False
 
     try:
@@ -68,30 +63,34 @@ if __name__ == "__main__":
             username = login.username,
             user_agent = 'testscript for /u/random_daily_subject')
 
-        is_holiday, post = is_today_holiday()
-        if is_holiday:
-            today = post[0]
-            body = post[1]
+        conn = sqlite3.connect(log_path)
+        c = conn.cursor()
+
+        title_id = db_handler.is_today_holiday(c)
+        if title_id:
+            title_id = title_id[0]
+            today = db_handler.get_title(c, title_id)[0]
+            [body, body_id] = db_handler.get_random_body(c, title_id)
         elif datetime.datetime.today().weekday() == 1: #Es martes?
-            today = "RANT"
-            body = ("**DALE BO ES MARTES!** \n\n ¿COMO NO SE ESTAN QUEJANDO " 
-                "YA? ¿TENGO QUE QUEJARME POR TODOS AHORA??? \n\n "
-                "**(╯°□°）╯︵ ┻━┻)** ")
+            title_id = 'rant'
         elif datetime.datetime.today().day == 29:
-            today = "ñoquis"
-            body = ("Sus experiencias con el estado uruguayo. "
-                "O podemos hablar de pasta. Como ustedes quieran.")
+            title_id = 'noqui'
         else:
-            log = load_log(log_path)
+            log = load_log(c, log_limit)
             while True:
-                today = random.SystemRandom().choice(list(weekly_topics.topics.keys()))
-                if today not in log[-6:]:
+                [title_id, today] = db_handler.get_random_title(c)
+                if title_id not in log:
                     break
-            body = weekly_topics.topics[today]
+
+        [body_id, body] = db_handler.get_random_body(c, title_id)
+
         if not debug_mode:
-            update_log(today, log_path)
+            update_log(c, title_id, body_id)
         else:
-            print(today)
+            update_log(c, title_id, body_id)
+            print('Log: ' + str(log))
+            print('Today: ' + today)
+            print('Body: ' + body)
 
         title = days[datetime.datetime.today().weekday()] \
                 + ' de ' + today + '.'
@@ -106,3 +105,8 @@ if __name__ == "__main__":
     except Exception as exception:
         output_log(str(exception))
         output_log(traceback.format_exc())
+        if debug_mode:
+            raise(exception)
+    finally:
+        conn.commit()
+        c.close()

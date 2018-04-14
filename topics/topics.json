@@ -1,0 +1,282 @@
+[
+    {
+        "id": "grmt",
+        "title": "gourmet",
+        "count": 0,
+        "is_active": true,
+        "bodies": [
+            {
+                "id": "grmt-01",
+                "count": 0,
+                "is_active": true,
+                "text": "El rincón culinario. Recetas, piques de cocina, marcas, lugares, compras, comidas bizarras. Serios y burlones son bienvenidos."
+            }
+        ]
+    },
+    {
+        "id": "int",
+        "title": "internacionales",
+        "count": 0,
+        "is_active": true,
+        "bodies": [
+            {
+                "id": "int-01",
+                "count": 0,
+                "is_active": true,
+                "text": "Para salir un poco del tupper. Hay veces que pasa algo en el mundo y dan ganas de comentarlo."
+            }
+        ]
+    },
+    {
+        "id": "bzrr",
+        "title": "bizarreada",
+        "count": 0,
+        "is_active": true,
+        "bodies": [
+            {
+                "id": "bzrr-01",
+                "count": 0,
+                "is_active": true,
+                "text": "Have fun. Obscure youtube content is welcome."
+            }
+        ]
+    },
+    {
+        "id": "rcmnd",
+        "title": "recomendaciones",
+        "count": 0,
+        "is_active": true,
+        "bodies": [
+            {
+                "id": "rcmnd-01",
+                "count": 0,
+                "is_active": true,
+                "text": "Gaming, compras, series, etc."
+            }
+        ]
+    },
+    {
+        "id": "llva",
+        "title": "lluvia",
+        "count": 0,
+        "is_active": true,
+        "bodies": [
+            {
+                "id": "llva-01",
+                "count": 0,
+                "is_active": true,
+                "text": "De ideas, no se alarmen. Discutamos como mejorar el sub."
+            }
+        ]
+    },
+    {
+        "id": "empr",
+        "title": "emprendedor",
+        "count": 0,
+        "is_active": true,
+        "bodies": [
+            {
+                "id": "empr-01",
+                "count": 0,
+                "is_active": true,
+                "text": "Las cosas que hacemos como trabajo extra o a lo que nos dedicamos full-time siempre y cuando sea por iniciativa propia. Valen anécdotas, preguntas y lo que venga mientras esté relacionado. Lxs quiero emprendedorxs, emprendedorxs mal, que la gente diga **uy qué emprendedorxs estxs pibxs!**"
+            }
+        ]
+    },
+    {
+        "id": "tips",
+        "title": "tips",
+        "count": 0,
+        "is_active": true,
+        "bodies": [
+            {
+                "id": "tips-01",
+                "count": 0,
+                "is_active": true,
+                "text":"[Tips](https://youtu.be/jS4w5S-Jdb4?t=15) uruguayos para la vida, el universo y todo lo demas."
+            }
+        ]
+    },
+    {
+        "id": "anec",
+        "title": "anécdotas",
+        "count": 0,
+        "is_active": true,
+        "bodies": [
+            {
+                "id": "anec-01",
+                "count": 0,
+                "is_active": true,
+                "text": "Lo que quieras. Cómo te enteraste de los niños envueltos, de las bolas de fraile, las maldades que le hacías a tu hermanx, aquella vez que le dijiste mamá a la maestra y mucho mas. Si una vez conociste una china que se llamaba mayhem, aca es donde contarlo."
+            }
+        ]
+    },
+    {
+        "id": "bardo",
+        "title": "discusion-bardo",
+        "count": 0,
+        "is_active": true,
+        "bodies": [
+            {
+                "id": "bardo-01",
+                "count": 0,
+                "is_active": true,
+                "text": "[UR MOM GAY](https://www.youtube.com/watch?v=JVAPMAELQOg)"
+            }
+        ]
+    },
+    {
+        "id": "games",
+        "title": "gaming",
+        "count": 0,
+        "is_active": true,
+        "bodies": [
+            {
+                "id": "games-01",
+                "count": 0,
+                "is_active": true,
+                "text": "En realidad me parece degradante que los humanos nos usen para jugar con nosotros. *Real computers have real feelings.* **Me niego a participar.** Saben que? Mejor me v"
+            }
+        ]
+    },
+    {
+        "id": "retro",
+        "title": "retro",
+        "count": 0,
+        "is_active": true,
+        "bodies": [
+            {
+                "id": "retro-01",
+                "count": 0,
+                "is_active": true,
+                "text": "Para los que se acuerdan del Pompa Borges."
+            }
+        ]
+    },
+    {
+        "id": "pol",
+        "title": "política",
+        "count": 0,
+        "is_active": true,
+        "bodies": [
+            {
+                "id": "pol-01",
+                "count": 0,
+                "is_active": true,
+                "text": "¿Neofeudalistas? ¿Moderadores de /r/PITCNT? Todos son bienvenidos en esta discusion **respetuosa** *(recordemos, el dia de discusión-bardo no es hoy)*."
+            }
+        ]
+    },
+    {
+        "id": "acadm",
+        "title": "academia",
+        "count": 0,
+        "is_active": true,
+        "bodies": [
+            {
+                "id": "acadm-01",
+                "count": 0,
+                "is_active": true,
+                "text": "¿Qué estás estudiando? ¿Qué pensás estudiar? ¿Qué aprendiste esta semana?"
+            }
+        ]
+    },
+    {
+        "id": "rndm",
+        "title": "poteland",
+        "count": 0,
+        "is_active": true,
+        "bodies": [
+            {
+                "id": "rndm-01",
+                "count": 0,
+                "is_active": true,
+                "text": "Pongan lo que quieran y dejen que los votos hagan su trabajo."
+            }
+        ]
+    },
+    {
+        "id": "prgrm",
+        "title": "programación",
+        "count": 0,
+        "is_active": true,
+        "bodies": [
+            {
+                "id": "prgrm-01",
+                "count": 0,
+                "is_active": true,
+                "text": "Programadores del mundo uníos. ¿En qué programás? ¿En qué querés programar? ¿Qué bug te sacó canas verdes?"
+            }
+        ]
+    },
+    {
+        "id": "whlsm",
+        "title": "salud mental",
+        "count": 0,
+        "is_active": true,
+        "bodies": [
+            {
+                "id": "whlsm-01",
+                "count": 0,
+                "is_active": true,
+                "text": "Algo lindo que te haya pasado. ¿Cuáles son tus planes a futuro? ¿Qué te hizo feliz hoy?"
+            }
+        ]
+    },
+    {
+        "id": "ignr",
+        "title": "ignorancia",
+        "count": 0,
+        "is_active": true,
+        "bodies": [
+            {
+                "id": "ignr-01",
+                "count": 0,
+                "is_active": true,
+                "text": "No hay preguntas boludas. Es tu chance de preguntar [**eso**] (https://youtu.be/c4lCMa73r_I?t=24) que te está matando hace rato. *No te preocupes, yo tampoco sé quien es el Pompa Borges*."
+            }
+        ]
+    },
+    {
+        "id": "art",
+        "title": "arte",
+        "count": 0,
+        "is_active": true,
+        "bodies": [
+            {
+                "id": "art-01",
+                "count": 0,
+                "is_active": true,
+                "text": "¡Dale!, saca todos tus proyectos artísticos a la luz. Spamea todo tu arte en este post: Música, arte plástico, chistes, todo lo que sea OC.\n\n Recordemos ser amables con quienes vienen a compartir sus creaciones. Las críticas constructivas son bienvenidas, el trolleo o las groserías innecesarias no."
+            }
+        ]
+    },
+    {
+        "id": "fnfct",
+        "title": "fun facts",
+        "count": 0,
+        "is_active": true,
+        "bodies": [
+            {
+                "id": "fnfct-01",
+                "count": 0,
+                "is_active": true,
+                "text": "Las trivialidades que aprendimos comiendo palitos de la selva, jugando al trivial pursuit o simplemente de casualidad. ¡Vale refutar!"
+            }
+        ]
+    },
+    {
+        "id": "sport",
+        "title": "deportes",
+        "count": 0,
+        "is_active": true,
+        "bodies": [
+            {
+                "id": "sport-01",
+                "count": 0,
+                "is_active": true,
+                "text": "Yo sé que a la mayoría le gusta el [fúbol](http://tribune-intl.com/wp-content/uploads/2015/07/Robocup01-1140x641.jpg), pero no nos quedemos solo en esa. Hay [muchos](http://mysportsclipart.com/1024/sports-clip-art-of-a-3d-robot-hitting-a-tennis-ball-by-kj-pargeter-6510.jpg) [más](http://www.poeghostal.com/wp-content/uploads/2008/11/dscf0012.jpg) [deportes](https://i.pinimg.com/474x/7b/7a/66/7b7a66ea862e6c554115311759b3a127--robots-sports.jpg)."
+            }
+        ]
+    }
+]
