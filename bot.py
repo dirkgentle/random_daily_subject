@@ -20,13 +20,15 @@ def load_log(cursor, limit):
     aux = db_handler.get_latest_submissions(cursor, limit)
     return [x[0] for x in aux]
 
-def output_log(text):
+def output_log(text, debug_mode=False):
     # lo uso para ver el output del bot
-    output_log_path = "output_log.txt"
+    date_text = datetime.date.today().strftime('%Y_%m')
+    output_log_path = './logs/' + date_text + '_output_log.txt'
     with open(output_log_path, 'a') as myLog:
-        s = "[" +  datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "] "
-        s = s + text +  "\n"
+        s = '[' +  datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + ']'
+        s = s + text +  '\n'
         myLog.write(s)
+    if debug_mode: print(text)
 
 days = [
     'Lunes',
@@ -55,7 +57,7 @@ if __name__ == "__main__":
             debug_mode = True
 
     try:
-        output_log('Comenzando el script')
+        output_log('Comenzando el script', debug_mode)
         reddit = praw.Reddit(
             client_id = login.client_id,
             client_secret = login.client_secret,
@@ -88,16 +90,14 @@ if __name__ == "__main__":
             update_log(c, title_id, body_id)
         else:
             print('Log: ' + str(log))
-            print('Today: ' + today)
-            print('Body: ' + body)
 
         title = days[datetime.datetime.today().weekday()] \
                 + ' de ' + today + '.'
         body = body + "\n\n*****\n\n"
         body = body + "*Another bot by \/u/DirkGentle.* "
         body = body + "[Source](https://github.com/dirkgentle/random_daily_subject)."
-        output_log(title)
-        output_log(body)
+        output_log(title, debug_mode)
+        output_log(body, debug_mode)
         if not debug_mode:
             reddit.subreddit('Uruguay').submit(title, selftext=body)
 
