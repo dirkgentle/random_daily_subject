@@ -87,7 +87,6 @@ if __name__ == "__main__":
         if not debug_mode:
             update_log(c, title_id, body_id)
         else:
-            update_log(c, title_id, body_id)
             print('Log: ' + str(log))
             print('Today: ' + today)
             print('Body: ' + body)

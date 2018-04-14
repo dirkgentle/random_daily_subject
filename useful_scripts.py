@@ -2,6 +2,21 @@ import db_handler
 import datetime
 import sqlite3
 
+# set up database for use with the bot
+def set_up_bot():
+    db_name = 'topics.db'
+    log_name = 'log.txt'
+    # bot comments every day at 8:02 AM
+    bot_time_hours = 8
+    bot_time_minutes = 2
+    already_posted = (
+        bot_time_hours < datetime.datetime.now().hour
+        or bot_time_hours == datetime.datetime.now().hour
+        and bot_time_minutes < datetime.datetime.now().minute
+    )
+
+    db_handler.up_db('topics.db')
+    migrate_log_to_db('log.txt', 'topics.db', already_posted)
 
 # Para migrar los datos viejos
 def migrate_log_to_db(log_path, db_name, already_posted_today):
