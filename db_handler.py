@@ -87,7 +87,7 @@ def update_title(cursor, topic, is_holiday=0, is_special=0):
                 is_special
             )
         )
-    elif db_topic[0] == 0:
+    else:
         cursor.execute('''UPDATE titles SET
             title=?,is_holiday=?,is_special=?,is_active=1 WHERE id=?''', (
                 topic['title'],
@@ -103,7 +103,7 @@ def update_body(cursor, body, title_id):
     db_body = cursor.fetchone()
     if not db_body:
         cursor.execute('INSERT INTO bodies VALUES (?, ?, ?, ?, 1)',
-            (body['id'], body['body'], body['count'], title_id))
+            (body['id'], body['text'], body['count'], title_id))
     elif db_body[0] == 0:
         cursor.execute('''UPDATE bodies SET
             text=?,title_id=?,is_active=1 WHERE id=?''', (
@@ -244,25 +244,37 @@ def print_topics(db_name):
     conn = sqlite3.connect(db_name)
     c = conn.cursor()
 
-    c.execute('SELECT * FROM titles')
+    c.execute('SELECT id,title,is_active,is_holiday,is_special FROM titles')
     titles = c.fetchall()
     for title in titles:
         print('***************')
-        print(title[1])
+        print('id: ' + title[0])
+        print('title: ' + title[1])
         
-        if title[2]:
-            print('Es feriado!')
-            c.execute('SELECT * FROM holidays WHERE title_id=?',(title[0],))
-            date = c.fetchone()
-            print('Día ' + str(date[2]) + ' del mes ' + str(date[1]))
-        
-        if title[3]:
-            print('Es un día especial')
+        if not title[2]:
+            print('-- INACTIVO --')
 
-        c.execute('SELECT * FROM bodies WHERE title_id=?',(title[0],))
+        if title[3]:
+            c.execute('SELECT day,month FROM holidays WHERE title_id=?',
+                (title[0],)
+            )
+            date = c.fetchone()
+            print('-- ¡El '+ str(date[0]) + ' del ' + str(date[1]) +  \
+                ' es feriado! --')
+        
+        if title[4]:
+            print('-- Es un día especial. --')
+
+        c.execute('SELECT body,is_active FROM bodies WHERE title_id=?',
+            (title[0],)
+        )
         bodies = c.fetchall()
         for body in bodies:
-            print(body[1])
+            if not body[1]:
+                print('-- INACTIVO --')
+            print('\t' + body[0])
+            if not body[1]:
+                print('-- --')
     print('***************')
 
     conn.commit()

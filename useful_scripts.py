@@ -2,6 +2,18 @@ import db_handler
 import datetime
 import sqlite3
 
+# update db when the topics are updated
+def update_bot_db():
+    conn = sqlite3.connect('topics.db')
+    c = conn.cursor()
+
+    db_handler.load_topics(c)
+
+    conn.commit()
+    c.close()
+    db_handler.print_topics('topics.db')
+
+
 # set up database for use with the bot
 def set_up_bot():
     db_name = 'topics.db'
