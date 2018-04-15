@@ -131,7 +131,15 @@ if __name__ == "__main__":
         output_log(body, debug_mode)
 
         if not debug_mode:
-            reddit.subreddit('Uruguay').submit(title, selftext=body)
+            submission = reddit.subreddit('Uruguay').submit(title, selftext=body)
+            # set flair
+            template_id = (
+                next(
+                    x for x in submission.flair.choices()
+                    if x['flair_text'] == 'Discusión'
+                )['flair_template_id']
+            )
+            submission.flair.select(template_id)
 
     except Exception as exception:
         output_log(str(exception))
