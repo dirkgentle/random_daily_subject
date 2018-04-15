@@ -103,7 +103,7 @@ def update_body(cursor, body, title_id):
     db_body = cursor.fetchone()
     if not db_body:
         cursor.execute('INSERT INTO bodies VALUES (?, ?, ?, ?, 1)',
-            (body['id'], body['text'], body['count'], title_id))
+            (body['id'], body['body'], body['count'], title_id))
     elif db_body[0] == 0:
         cursor.execute('''UPDATE bodies SET
             text=?,title_id=?,is_active=1 WHERE id=?''', (
@@ -165,6 +165,10 @@ def get_random_title(cursor):
         '''SELECT id, title FROM titles
             WHERE is_holiday = 0 AND is_special = 0 AND is_active != 0
             ORDER BY RANDOM() LIMIT 1''',)
+    return cursor.fetchone()
+
+def get_body(cursor, body_id):
+    cursor.execute('SELECT body FROM bodies WHERE id=?', (body_id,))
     return cursor.fetchone()
 
 def get_random_body(cursor, title_id):

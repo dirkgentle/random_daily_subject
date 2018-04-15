@@ -30,6 +30,36 @@ def output_log(text, debug_mode=False):
         myLog.write(s)
     if debug_mode: print(text)
 
+def choose_random_title(c, log_limit=6):
+    log = load_log(c, log_limit)
+
+    c.execute('''SELECT id,count FROM titles WHERE
+        is_active!=0 AND is_holiday==0 AND is_special==0''')
+    options = [option for option in c.fetchall() if option[0] not in log]
+
+    choosing_bag = []
+    count_avg = sum([option[1] for option in options]) / len(options)
+    for option in options:
+        # favour those options that haven't come out so much
+        multiplier = (
+            1 + int(count_avg - option[1]) if option[1] < count_avg else 1
+        )
+        for _ in range(multiplier):
+            choosing_bag.append(option[0])
+
+    return random.choice(choosing_bag)
+
+def choose_random_body(c, title_id):
+    c.execute('SELECT id,count FROM bodies WHERE is_active!=0 AND title_id=?',
+        (title_id,))
+    options = [option for option in c.fetchall()]
+
+    count_avg = sum([option[1] for option in options]) / len(options)
+    choosing_bag = [option[0] for option in options if option[1] <= count_avg]
+
+    return random.choice(choosing_bag)
+
+
 days = [
     'Lunes',
     'Martes',
@@ -39,6 +69,12 @@ days = [
     'Sabado',
     'Domingo'
     ]
+
+epilogue_text = (
+    '\n\n*****\n\n'
+    ' Another bot by \/u/DirkGentle.*'
+    ' [Source.](https://github.com/dirkgentle/random_daily_subject)'
+    )
 
 
 if __name__ == "__main__":
@@ -71,33 +107,29 @@ if __name__ == "__main__":
         title_id = db_handler.is_today_holiday(c)
         if title_id:
             title_id = title_id[0]
-            today = db_handler.get_title(c, title_id)[0]
-            [body, body_id] = db_handler.get_random_body(c, title_id)
-        elif datetime.datetime.today().weekday() == 1: #Es martes?
+        elif datetime.datetime.today().weekday() == 1:
+            # Es martes?
             title_id = 'rant'
         elif datetime.datetime.today().day == 29:
             title_id = 'noqui'
         else:
-            log = load_log(c, log_limit)
-            while True:
-                [title_id, today] = db_handler.get_random_title(c)
-                if title_id not in log:
-                    break
+            title_id = choose_random_title(c, 6)
 
-        [body_id, body] = db_handler.get_random_body(c, title_id)
+        body_id = choose_random_body(c, title_id)
+        today = db_handler.get_title(c, title_id)[0]
+        body = db_handler.get_body(c, body_id)[0]
 
         if not debug_mode:
             update_log(c, title_id, body_id)
         else:
-            print('Log: ' + str(log))
+            print('Log: ' + str(load_log(c, log_limit)))
 
         title = days[datetime.datetime.today().weekday()] \
                 + ' de ' + today + '.'
-        body = body + "\n\n*****\n\n"
-        body = body + "*Another bot by \/u/DirkGentle.* "
-        body = body + "[Source](https://github.com/dirkgentle/random_daily_subject)."
+        body = body + epilogue_text
         output_log(title, debug_mode)
         output_log(body, debug_mode)
+
         if not debug_mode:
             reddit.subreddit('Uruguay').submit(title, selftext=body)
 
