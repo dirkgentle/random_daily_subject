@@ -1,0 +1,30 @@
+[
+    {
+        "id": "rant",
+        "title": "RANT",
+        "count": 0,
+        "is_active": true,
+        "bodies": [
+            {
+                "id": "rant-01",
+                "count": 0,
+                "is_active": true,
+                "text": "**DALE BO ES MARTES!** \n\n ¿COMO NO SE ESTAN QUEJANDO YA? ¿TENGO QUE QUEJARME POR TODOS AHORA??? \n\n **(╯°□°）╯︵ ┻━┻)** "
+            }
+        ]
+    },
+    {
+        "id": "noqui",
+        "title": "ñoquis",
+        "count": 0,
+        "is_active": true,
+        "bodies": [
+            {
+                "id": "noqui-01",
+                "is_active": true,
+                "count": 0,
+                "text": "Sus experiencias con el estado uruguayo. O podemos hablar de pasta. Como ustedes quieran."
+            }
+        ]
+    }
+] 
