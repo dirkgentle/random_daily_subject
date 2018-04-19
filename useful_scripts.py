@@ -30,6 +30,32 @@ def set_up_bot():
     db_handler.up_db('topics.db')
     migrate_log_to_db('log.txt', 'topics.db', already_posted)
 
+def add_debug_columns():
+    db_name = 'topics.db'
+    now = datetime.datetime.now()
+
+    conn = sqlite3.connect(db_name)
+    c = conn.cursor()
+
+    c.execute('ALTER TABLE titles ADD COLUMN \'created_at\' \'TEXT\'')
+    c.execute('ALTER TABLE titles ADD COLUMN \'modified_at\' \'TEXT\'')
+    c.execute('UPDATE titles SET created_at=?,modified_at=?', (now,now,))
+
+    c.execute('ALTER TABLE bodies ADD COLUMN \'created_at\' \'TEXT\'')
+    c.execute('ALTER TABLE bodies ADD COLUMN \'modified_at\' \'TEXT\'')
+    c.execute('UPDATE bodies SET created_at=?,modified_at=?', (now,now,))
+
+    c.execute('ALTER TABLE holidays ADD COLUMN \'is_active\' \'INTEGER\'')
+    c.execute('ALTER TABLE holidays ADD COLUMN \'created_at\' \'TEXT\'')
+    c.execute('ALTER TABLE holidays ADD COLUMN \'modified_at\' \'TEXT\'')
+    c.execute('UPDATE holidays SET is_active=?,created_at=?,modified_at=?', (
+        1,now,now,
+    ))
+
+    conn.commit()
+    c.close()
+
+
 # Para migrar los datos viejos
 def migrate_log_to_db(log_path, db_name, already_posted_today):
     with open(log_path) as old_log:

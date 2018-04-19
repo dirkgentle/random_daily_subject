@@ -15,7 +15,7 @@
     },
     {
         "id": "int",
-        "title": "internacionales",
+        "title": "de internacionales",
         "count": 0,
         "is_active": true,
         "bodies": [
@@ -29,7 +29,7 @@
     },
     {
         "id": "bzrr",
-        "title": "bizarreada",
+        "title": "de bizarreada",
         "count": 0,
         "is_active": true,
         "bodies": [
@@ -43,7 +43,7 @@
     },
     {
         "id": "rcmnd",
-        "title": "recomendaciones",
+        "title": "de recomendaciones",
         "count": 0,
         "is_active": true,
         "bodies": [
@@ -57,7 +57,7 @@
     },
     {
         "id": "llva",
-        "title": "lluvia",
+        "title": "de lluvia",
         "count": 0,
         "is_active": true,
         "bodies": [
@@ -85,7 +85,7 @@
     },
     {
         "id": "tips",
-        "title": "tips",
+        "title": "de tips",
         "count": 0,
         "is_active": true,
         "bodies": [
@@ -99,7 +99,7 @@
     },
     {
         "id": "anec",
-        "title": "anécdotas",
+        "title": "de anécdotas",
         "count": 0,
         "is_active": true,
         "bodies": [
@@ -113,7 +113,7 @@
     },
     {
         "id": "bardo",
-        "title": "discusion-bardo",
+        "title": "de discusion-bardo",
         "count": 0,
         "is_active": true,
         "bodies": [
@@ -127,7 +127,7 @@
     },
     {
         "id": "games",
-        "title": "gaming",
+        "title": "de gaming",
         "count": 0,
         "is_active": true,
         "bodies": [
@@ -155,7 +155,7 @@
     },
     {
         "id": "pol",
-        "title": "política",
+        "title": "de política",
         "count": 0,
         "is_active": true,
         "bodies": [
@@ -169,7 +169,7 @@
     },
     {
         "id": "acadm",
-        "title": "academia",
+        "title": "de academia",
         "count": 0,
         "is_active": true,
         "bodies": [
@@ -183,7 +183,7 @@
     },
     {
         "id": "rndm",
-        "title": "poteland",
+        "title": "random",
         "count": 0,
         "is_active": true,
         "bodies": [
@@ -197,7 +197,7 @@
     },
     {
         "id": "prgrm",
-        "title": "programación",
+        "title": "de programación",
         "count": 0,
         "is_active": true,
         "bodies": [
@@ -211,7 +211,7 @@
     },
     {
         "id": "whlsm",
-        "title": "salud mental",
+        "title": "wholesome",
         "count": 0,
         "is_active": true,
         "bodies": [
@@ -225,7 +225,7 @@
     },
     {
         "id": "ignr",
-        "title": "ignorancia",
+        "title": "de la ignorancia",
         "count": 0,
         "is_active": true,
         "bodies": [
@@ -239,7 +239,7 @@
     },
     {
         "id": "art",
-        "title": "arte",
+        "title": "de arte",
         "count": 0,
         "is_active": true,
         "bodies": [
@@ -253,7 +253,7 @@
     },
     {
         "id": "fnfct",
-        "title": "fun facts",
+        "title": "de fun facts",
         "count": 0,
         "is_active": true,
         "bodies": [
@@ -267,7 +267,7 @@
     },
     {
         "id": "sport",
-        "title": "deportes",
+        "title": "de deportes",
         "count": 0,
         "is_active": true,
         "bodies": [
@@ -281,7 +281,7 @@
     },
     {
         "id": "adj",
-        "title": "adjetivos",
+        "title": "de adjetivos",
         "count": 0,
         "is_active": true,
         "bodies": [
