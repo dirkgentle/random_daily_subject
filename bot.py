@@ -124,7 +124,7 @@ if __name__ == "__main__":
         else:
             print('Log: ' + str(load_log(c, log_limit)))
 
-        title = days[datetime.datetime.today().weekday()] + today + '.'
+        title = days[datetime.datetime.today().weekday()] + ' ' + today + '.'
         body = body + epilogue_text
         output_log(title, debug_mode)
         output_log(body, debug_mode)
