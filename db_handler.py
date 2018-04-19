@@ -21,7 +21,9 @@ def create_tables_db(c):
         count INTEGER,
         is_holiday INTEGER,
         is_special INTEGER,
-        is_active INTEGER
+        is_active INTEGER,
+        created_at TEXT,
+        modified_at TEXT
         )''') # is_xxx == 0 if not xxx, true for other cases
     c.execute('''CREATE TABLE IF NOT EXISTS bodies (
         id TEXT PRIMARY KEY,
@@ -29,6 +31,8 @@ def create_tables_db(c):
         count INTEGER,
         title_id INTEGER NOT NULL,
         is_active INTEGER,
+        created_at TEXT,
+        modified_at TEXT,
         FOREIGN KEY(title_id) REFERENCES titles(id)
         )''')
     c.execute('''CREATE TABLE IF NOT EXISTS submitted (
@@ -44,6 +48,9 @@ def create_tables_db(c):
         title_id TEXT PRIMARY KEY,
         day INTEGER NOT NULL,
         month INTEGER,
+        is_active INTEGER,
+        created_at TEXT,
+        modified_at TEXT,
         FOREIGN KEY(title_id) REFERENCES titles(id)
         )''')
 
@@ -79,20 +86,25 @@ def update_title(cursor, topic, is_holiday=0, is_special=0):
     db_topic = cursor.fetchone()
     if not db_topic:
         cursor.execute(
-            'INSERT INTO titles VALUES (?, ?, ?, ?, ?, 1)', (
+            'INSERT INTO titles VALUES (?, ?, ?, ?, ?, 1, ?, ?)', (
                 topic['id'],
                 topic['title'],
                 topic['count'],
                 is_holiday,
-                is_special
+                is_special,
+                datetime.datetime.now(),
+                datetime.datetime.now()
             )
         )
     else:
-        cursor.execute('''UPDATE titles SET
-            title=?,is_holiday=?,is_special=?,is_active=1 WHERE id=?''', (
+        cursor.execute(
+            '''UPDATE titles SET
+            title=?,is_holiday=?,is_special=?,is_active=1,modified_at=?
+            WHERE id=?''', (
                 topic['title'],
                 is_holiday,
                 is_special,
+                datetime.datetime.now(),
                 topic['id']
             )
         )
@@ -102,14 +114,23 @@ def update_body(cursor, body, title_id):
     cursor.execute('SELECT is_active FROM bodies WHERE id=?', (body['id'],))
     db_body = cursor.fetchone()
     if not db_body:
-        cursor.execute('INSERT INTO bodies VALUES (?, ?, ?, ?, 1)',
-            (body['id'], body['text'], body['count'], title_id))
+        cursor.execute(
+            'INSERT INTO bodies VALUES (?, ?, ?, ?, 1, ?, ?)', (
+                body['id'],
+                body['text'],
+                body['count'],
+                title_id,
+                datetime.datetime.now(),
+                datetime.datetime.now()
+            ),
+        )
     elif db_body[0] == 0:
         cursor.execute('''UPDATE bodies SET
-            text=?,title_id=?,is_active=1 WHERE id=?''', (
+            text=?,title_id=?,is_active=1,modified_at=? WHERE id=?''', (
                 body['text'],
                 title_id,
-                body['id']
+                body['id'],
+                datetime.datetime.now()
             )
         )
 
@@ -127,8 +148,15 @@ def update_holiday(cursor, topic):
     cursor.execute('SELECT * FROM holidays WHERE title_id=?', (topic['id'],))
     db_topic = cursor.fetchone()
     if not db_topic:
-        cursor.execute('INSERT INTO holidays VALUES (?, ?, ?)',
-            (topic['id'], topic['day'], topic['month'],))
+        cursor.execute(
+            'INSERT INTO holidays VALUES (?, ?, ?, 1, ?, ?)', (
+                topic['id'],
+                topic['day'],
+                topic['month'],
+                datetime.datetime.now(),
+                datetime.datetime.now()
+            )
+        )
 
 
 #db reading

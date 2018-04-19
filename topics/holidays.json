@@ -1,7 +1,7 @@
 [
     {
         "id": "nwyr",
-        "title": "año nuevo",
+        "title": "de año nuevo",
         "count": 0,
         "is_active": true,
         "day": 1,
@@ -17,7 +17,7 @@
     },
     {
         "id": "reyes",
-        "title": "año nuevo",
+        "title": "de reyes",
         "count": 0,
         "is_active": true,
         "day": 6,
@@ -33,7 +33,7 @@
     },
     {
         "id": "rou",
-        "title": "la independencia de /r/ROU",
+        "title": "de la independencia de /r/ROU",
         "count": 0,
         "is_active": true,
         "day": 7,
@@ -49,7 +49,7 @@
     },
     {
         "id": "wmns",
-        "title": "la mujer",
+        "title": "de la mujer",
         "count": 0,
         "is_active": true,
         "day": 8,
@@ -65,7 +65,7 @@
     },
     {
         "id": "orntl",
-        "title": "los Treinta y Tres",
+        "title": "de los Treinta y Tres",
         "count": 0,
         "is_active": true,
         "day": 19,
@@ -81,7 +81,7 @@
     },
     {
         "id": "wrkrs",
-        "title": "los trabajadores",
+        "title": "de los trabajadores",
         "count": 0,
         "is_active": true,
         "day": 1,
@@ -97,7 +97,7 @@
     },
     {
         "id": "artgs",
-        "title": "Artigas",
+        "title": "de Artigas",
         "count": 0,
         "is_active": true,
         "day": 19,
@@ -113,7 +113,7 @@
     },
     {
         "id": "csttn",
-        "title": "la constitución",
+        "title": "de la constitución",
         "count": 0,
         "is_active": true,
         "day": 18,
@@ -129,7 +129,7 @@
     },
     {
         "id": "nstlg",
-        "title": "la nostalgia",
+        "title": "de la nostalgia",
         "count": 0,
         "is_active": true,
         "day": 24,
@@ -145,7 +145,7 @@
     },
     {
         "id": "nvdd",
-        "title": "la familia",
+        "title": "de la familia",
         "count": 0,
         "is_active": true,
         "day": 25,
