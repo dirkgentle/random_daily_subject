@@ -281,7 +281,7 @@
     },
     {
         "id": "adj",
-        "title": "de adjetivos",
+        "title": "subjetivo",
         "count": 0,
         "is_active": true,
         "bodies": [
@@ -374,6 +374,20 @@
                 "count": 0,
                 "is_active": true,
                 "text": "¿Quién es el uruguayo más **generoso**?"
+            }
+        ]
+    },
+    {
+        "id": "cnfsn",
+        "title": "de confesión",
+        "count": 0,
+        "is_active": true,
+        "bodies": [
+            {
+                "id": "cnfsn-01",
+                "count": 0,
+                "is_active": true,
+                "text": "¿Le tenés ganas a tu hermana? ¿Masturbación compulsiva? ¿Te gusta tararear mientras defecás en baños públicos? Es tu lugar. Se aceptan throwaways."
             }
         ]
     }
