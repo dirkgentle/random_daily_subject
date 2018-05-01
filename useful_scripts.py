@@ -1,6 +1,7 @@
-import db_handler
 import datetime
 import sqlite3
+
+import db_handler
 
 # update db when the topics are updated
 def update_bot_db():
