@@ -96,6 +96,22 @@
         ]
     },
     {
+        "id": "pdrs",
+        "title": "de la Batalla de las Piedras",
+        "count": 0,
+        "is_active": true,
+        "day": 18,
+        "month": 5,
+        "bodies": [
+            {
+                "id": "pdrs-01",
+                "count": 0,
+                "is_active": true,
+                "text": "[Never forget.](https://youtu.be/FQ5YU_spBw0?t=127)"
+            }
+        ]
+    },
+    {
         "id": "artgs",
         "title": "de Artigas",
         "count": 0,
