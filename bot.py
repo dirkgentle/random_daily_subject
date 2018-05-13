@@ -9,6 +9,7 @@ import praw
 
 import login
 import db_handler
+import special_days
 
 
 def update_log(cursor, title_id, comment_id):
@@ -42,7 +43,7 @@ def choose_random_title(c, log_limit=6):
     for option in options:
         # favour those options that haven't come out so much
         multiplier = (
-            1 + int(count_avg - option[1]) if option[1] < count_avg else 1
+            1 + int(2 * (count_avg - option[1])) if option[1] < count_avg else 1
         )
         for _ in range(multiplier):
             choosing_bag.append(option[0])
@@ -104,14 +105,10 @@ if __name__ == "__main__":
         conn = sqlite3.connect(log_path)
         c = conn.cursor()
 
-        title_id = db_handler.is_today_holiday(c)
-        if title_id:
-            title_id = title_id[0]
-        elif datetime.datetime.today().weekday() == 1:
-            # Es martes?
-            title_id = 'rant'
-        elif datetime.datetime.today().day == 29:
-            title_id = 'noqui'
+        if db_handler.is_today_holiday(c):
+            title_id = db_handler.is_today_holiday(c)[0]
+        elif special_days.is_special_day():
+            title_id = special_days.is_special_day()
         else:
             title_id = choose_random_title(c, 6)
 
