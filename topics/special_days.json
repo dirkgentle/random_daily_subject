@@ -26,5 +26,47 @@
                 "text": "Sus experiencias con el estado uruguayo. O podemos hablar de pasta. Como ustedes quieran."
             }
         ]
+    },
+    {
+        "id": "mthrs",
+        "title": "de la madre",
+        "count": 0,
+        "is_active": true,
+        "bodies": [
+            {
+                "id": "mthrs-01",
+                "is_active": true,
+                "count": 0,
+                "text": "Recuerden salir abrigados, con ropa interior limpia y saludar a sus madres hoy. Para todas las madres del sub: ¡muy feliz día!"
+            }
+        ]
+    },
+    {
+        "id": "fthrs",
+        "title": "del padre",
+        "count": 0,
+        "is_active": true,
+        "bodies": [
+            {
+                "id": "fthrs-01",
+                "is_active": true,
+                "count": 0,
+                "text": "# DAD JOKES MEGATHREAD. Compartí tu mejor chiste de padre.\n\nNo se vayan a olvidar de saludar a sus padres hoy. Y para todos los padres del sub: ¡muy feliz día!"
+            }
+        ]
+    },
+    {
+        "id": "chldn",
+        "title": "del hijo",
+        "count": 0,
+        "is_active": true,
+        "bodies": [
+            {
+                "id": "chldn",
+                "is_active": true,
+                "count": 0,
+                "text": "Muy feliz día del ~~niño~~ hijo para todos. Acá podés compartir lo que ~~le pediste a tus padres~~ te regalaron espontáneamente sin vergüenza."
+            }
+        ]
     }
 ] 
