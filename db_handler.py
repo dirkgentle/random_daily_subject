@@ -111,7 +111,7 @@ def update_title(cursor, topic, is_holiday=0, is_special=0):
     return cursor.lastrowid
 
 def update_body(cursor, body, title_id):
-    cursor.execute('SELECT is_active FROM bodies WHERE id=?', (body['id'],))
+    cursor.execute('SELECT is_active, body FROM bodies WHERE id=?', (body['id'],))
     db_body = cursor.fetchone()
     if not db_body:
         cursor.execute(
@@ -124,13 +124,13 @@ def update_body(cursor, body, title_id):
                 datetime.datetime.now()
             ),
         )
-    elif db_body[0] == 0:
+    elif db_body[0] == 0 or db_body[1] != body['text']:
         cursor.execute('''UPDATE bodies SET
-            text=?,title_id=?,is_active=1,modified_at=? WHERE id=?''', (
+            body=?,title_id=?,is_active=1,modified_at=? WHERE id=?''', (
                 body['text'],
                 title_id,
+                datetime.datetime.now(),
                 body['id'],
-                datetime.datetime.now()
             )
         )
 
