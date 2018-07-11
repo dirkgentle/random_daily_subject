@@ -390,5 +390,33 @@
                 "text": "¿Le tenés ganas a tu hermana? ¿Masturbación compulsiva? ¿Te gusta tararear mientras defecás en baños públicos? Es tu lugar. Se aceptan throwaways."
             }
         ]
+    },
+    {
+        "id": "rgrts",
+        "title": "de arrepentimientos",
+        "count": 0,
+        "is_active": true,
+        "bodies": [
+            {
+                "id": "rgrts-01",
+                "count": 0,
+                "is_active": true,
+                "text": "Oportunidades que dejaste pasar y ahora te arrepentís."
+            }
+        ]
+    },
+    {
+        "id": "fears",
+        "title": "de miedos",
+        "count": 0,
+        "is_active": true,
+        "bodies": [
+            {
+                "id": "fears-01",
+                "count": 0,
+                "is_active": true,
+                "text": "Desde fobias y recuerdos a algo que te da miedo encarar."
+            }
+        ]
     }
 ]
