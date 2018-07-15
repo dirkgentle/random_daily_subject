@@ -27,11 +27,11 @@ def is_commercial_day(date):
 
     for commercial_day in commercial_days:
         date_is_commercial_day = (
-            date.weekday() == 6 and date.month == commercial_day.month
+            date.weekday() == 6 and date.month == commercial_day['month']
             and week_number_in_month(date) == 2 + offset
         )
         if date_is_commercial_day:
-            return commercial_day.code
+            return commercial_day['code']
 
 special_day_checks = [
     is_commercial_day,
