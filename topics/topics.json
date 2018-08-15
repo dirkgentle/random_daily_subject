@@ -424,5 +424,25 @@
                 "text": "Desde fobias y recuerdos a algo que te da miedo encarar."
             }
         ]
+    },
+    {
+        "id": "pride",
+        "title": "de orgullo",
+        "count": 0,
+        "is_active": true,
+        "bodies": [
+            {
+                "id": "pride-01",
+                "count": 0,
+                "is_active": true,
+                "text": "Esas historias donde **no** dejaste pasar la oportunidad y viviste con orgullo para contarlo."
+            },
+            {
+                "id": "pride-02",
+                "count": 0,
+                "is_active": true,
+                "text": "Contanos esa vez que la rompiste. Dale, es tu chance de presumir."
+            }
+        ]
     }
 ]

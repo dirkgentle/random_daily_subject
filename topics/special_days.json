@@ -68,5 +68,19 @@
                 "text": "Muy feliz día del ~~niño~~ hijo para todos. Acá podés compartir lo que ~~le pediste a tus padres~~ te regalaron espontáneamente sin vergüenza."
             }
         ]
+    },
+    {
+        "id": "dvrs",
+        "title": "de la diversidad",
+        "count": 0,
+        "is_active": true,
+        "bodies": [
+            {
+                "id": "dvrs-01",
+                "is_active": true,
+                "count": 0,
+                "text": "Feliz día de la diversidad para todxs. [Acá les dejo una Natalia Oreiro de la diversidad.](http://fotos.perfil.com/media/images/raw/2018/06/08/20180806-oreiro-natalia-rusia-328668.jpg)"
+            }
+        ]
     }
 ] 
