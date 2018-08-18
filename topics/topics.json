@@ -442,6 +442,12 @@
                 "count": 0,
                 "is_active": true,
                 "text": "Contanos esa vez que la rompiste. Dale, es tu chance de presumir."
+            },
+            {
+                "id": "pride-03",
+                "count": 0,
+                "is_active": true,
+                "text": "Situaciones que fueron un llamado a la humildad y te hicieron perder (o no) tu orgullo."
             }
         ]
     }
