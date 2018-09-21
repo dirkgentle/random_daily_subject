@@ -91,7 +91,7 @@
     },
     {
         "id": "tips",
-        "title": "de tips",
+        "title": "de piques",
         "count": 0,
         "is_active": true,
         "bodies": [
@@ -100,6 +100,12 @@
                 "count": 0,
                 "is_active": true,
                 "text":"[NSFWish] [Tips](https://youtu.be/jS4w5S-Jdb4?t=15) uruguayos para la vida, el universo y todo lo demas."
+            },
+            {
+                "id": "tips-02",
+                "count": 0,
+                "is_active": true,
+                "text":"[Piques](https://youtu.be/0Emc1k3UdSY?t=77) uruguayos para la vida, el universo y todo lo demas."
             }
         ]
     },
