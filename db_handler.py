@@ -1,6 +1,6 @@
-import sqlite3
 import datetime
 import json
+import sqlite3
 
 
 def up_db(db_name):
@@ -14,6 +14,7 @@ def up_db(db_name):
     conn.commit()
     c.close()
 
+
 def create_tables_db(c):
     c.execute('''CREATE TABLE IF NOT EXISTS titles (
         id TEXT PRIMARY KEY,
@@ -24,7 +25,7 @@ def create_tables_db(c):
         is_active INTEGER,
         created_at TEXT,
         modified_at TEXT
-        )''') # is_xxx == 0 if not xxx, true for other cases
+        )''')  # is_xxx == 0 if not xxx, true for other cases
     c.execute('''CREATE TABLE IF NOT EXISTS bodies (
         id TEXT PRIMARY KEY,
         body TEXT NOT NULL,
@@ -80,6 +81,7 @@ def load_topics(c):
         for body in topic.get('bodies'):
             update_body(c, body, topic['id'])
 
+
 # update the database
 def update_title(cursor, topic, is_holiday=0, is_special=0):
     cursor.execute('SELECT is_active FROM titles WHERE id=?', (topic['id'],))
@@ -110,8 +112,12 @@ def update_title(cursor, topic, is_holiday=0, is_special=0):
         )
     return cursor.lastrowid
 
+
 def update_body(cursor, body, title_id):
-    cursor.execute('SELECT is_active, body FROM bodies WHERE id=?', (body['id'],))
+    cursor.execute(
+        'SELECT is_active, body FROM bodies WHERE id=?',
+        (body['id'],)
+    )
     db_body = cursor.fetchone()
     if not db_body:
         cursor.execute(
@@ -134,15 +140,28 @@ def update_body(cursor, body, title_id):
             )
         )
 
+
 def update_submitted(cursor, title_id, body_id=None):
-    cursor.execute('INSERT INTO submitted VALUES (NULL, ?, ?, ?, ?)',
-        (datetime.datetime.now(),datetime.date.today().weekday(),title_id,
-         body_id,))
-    cursor.execute('UPDATE titles SET count = count + 1 WHERE id=?',
-        (title_id,))
+    cursor.execute(
+        'INSERT INTO submitted VALUES (NULL, ?, ?, ?, ?)', (
+            datetime.datetime.now(),
+            datetime.date.today().weekday(),
+            title_id,
+            body_id,
+        )
+    )
+    cursor.execute(
+        'UPDATE titles SET count = count + 1 WHERE id=?', (
+            title_id,
+        )
+    )
     if body_id:
-        cursor.execute('UPDATE bodies SET count = count + 1 WHERE id=?',
-            (body_id,))
+        cursor.execute(
+            'UPDATE bodies SET count = count + 1 WHERE id=?', (
+                body_id,
+            )
+        )
+
 
 def update_holiday(cursor, topic):
     cursor.execute('SELECT * FROM holidays WHERE title_id=?', (topic['id'],))
@@ -159,34 +178,50 @@ def update_holiday(cursor, topic):
         )
 
 
-#db reading
+# db reading
 def is_date_holiday(cursor, date):
-    cursor.execute('SELECT title_id FROM holidays WHERE (day,month)=(?,?)',
-        (date.day, date.month,))
+    cursor.execute(
+        'SELECT title_id FROM holidays WHERE (day,month)=(?,?)', (
+            date.day,
+            date.month,
+        )
+    )
     return cursor.fetchone()
+
 
 def is_today_holiday(cursor):
     return is_date_holiday(cursor, datetime.datetime.today())
 
+
 def get_latest_submissions(cursor, n=6):
     cursor.execute(
         'SELECT title_id FROM submitted ORDER BY DATETIME(date) DESC LIMIT ?',
-        (str(n)))
+        (
+            str(n)
+        )
+    )
     return cursor.fetchall()
+
 
 def get_title(cursor, title_id):
     cursor.execute('SELECT title FROM titles WHERE id=?', (title_id,))
     return cursor.fetchone()
 
+
 def get_title_id(cursor, title):
-    cursor.execute('SELECT id FROM titles WHERE title LIKE ?',
-        (title,))
+    cursor.execute(
+        'SELECT id FROM titles WHERE title LIKE ?', (
+            title,
+        )
+    )
     return cursor.fetchone()
+
 
 def get_random_submission(cursor):
     [title_id, title] = get_random_title(cursor)
     [body_id, body] = get_random_body(cursor, title_id)
     return (title_id, title, body_id, body)
+
 
 def get_random_title(cursor):
     cursor.execute(
@@ -195,24 +230,29 @@ def get_random_title(cursor):
             ORDER BY RANDOM() LIMIT 1''',)
     return cursor.fetchone()
 
+
 def get_body(cursor, body_id):
     cursor.execute('SELECT body FROM bodies WHERE id=?', (body_id,))
     return cursor.fetchone()
+
 
 def get_random_body(cursor, title_id):
     cursor.execute(
         '''SELECT id, body FROM bodies
             WHERE title_id = ? AND is_active != 0
-            ORDER BY RANDOM() LIMIT 1''',
-            (str(title_id),))
+            ORDER BY RANDOM() LIMIT 1''', (
+            str(title_id),
+        )
+    )
     return cursor.fetchone()
 
 
-#db cleaning
+# db cleaning
 def clean_db(c):
     # c is a db cursor
     clean_titles(c)
     clean_bodies(c)
+
 
 def clean_titles(c):
     # c is a db cursor
@@ -225,7 +265,7 @@ def clean_titles(c):
     json_data = open('topics/holidays.json').read()
     topics = json.loads(json_data)
     all_keys += [topic['id'] for topic in topics]
-    
+
     json_data = open('topics/special_days.json').read()
     topics = json.loads(json_data)
     all_keys += [topic['id'] for topic in topics]
@@ -233,17 +273,18 @@ def clean_titles(c):
     c.execute('SELECT id FROM titles WHERE is_active!=0')
     title_ids = c.fetchall()
     for title_id in title_ids:
-        if title_id  not in all_keys:
+        if title_id not in all_keys:
             c.execute('UPDATE titles SET is_active=0 WHERE id=?', (title_id,))
 
+
 def clean_bodies(c):
-    #c is a db cursor
+    # c is a db cursor
     all_bodies = []
 
     json_data = open('topics/topics.json').read()
     topics = json.loads(json_data)
     all_bodies += [body['id'] for topic in topics for body in topic['bodies']]
-    
+
     json_data = open('topics/holidays.json').read()
     topics = json.loads(json_data)
     all_bodies += [body['id'] for topic in topics for body in topic['bodies']]
@@ -258,15 +299,17 @@ def clean_bodies(c):
         if body[1] not in all_bodies:
             c.execute('UPDATE bodies SET is_active=0 WHERE id=?', (body[0],))
 
-#para imprimir la base de datos en pantalla
+
+# para imprimir la base de datos en pantalla
 def print_tables(db_name, table_name):
     conn = sqlite3.connect(db_name)
     c = conn.cursor()
-    c.execute('SELECT * FROM {}'.format(table_name)) # insecure!!! debug only
+    c.execute('SELECT * FROM {}'.format(table_name))  # insecure!!! debug only
     out = c.fetchall()
     conn.commit()
     c.close()
     return out
+
 
 def print_topics(db_name):
     conn = sqlite3.connect(db_name)
@@ -278,23 +321,29 @@ def print_topics(db_name):
         print('***************')
         print('id: ' + title[0])
         print('title: ' + title[1])
-        
+
         if not title[2]:
             print('-- INACTIVO --')
 
         if title[3]:
-            c.execute('SELECT day,month FROM holidays WHERE title_id=?',
-                (title[0],)
+            c.execute(
+                'SELECT day,month FROM holidays WHERE title_id=?', (
+                    title[0],
+                )
             )
             date = c.fetchone()
-            print('-- ¡El '+ str(date[0]) + ' del ' + str(date[1]) +  \
-                ' es feriado! --')
-        
+            print(
+                '-- ¡El ' + str(date[0]) + ' del ' + str(date[1]) +
+                ' es feriado! --'
+            )
+
         if title[4]:
             print('-- Es un día especial. --')
 
-        c.execute('SELECT body,is_active FROM bodies WHERE title_id=?',
-            (title[0],)
+        c.execute(
+            'SELECT body,is_active FROM bodies WHERE title_id=?', (
+                title[0],
+            )
         )
         bodies = c.fetchall()
         for body in bodies:
@@ -307,6 +356,7 @@ def print_topics(db_name):
 
     conn.commit()
     c.close()
+
 
 def print_submitted(db_name):
     conn = sqlite3.connect(db_name)
