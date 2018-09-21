@@ -11,7 +11,7 @@ def is_diversity_day(date):
     diversity_day = max(
         week[-3] for week in calendar.monthcalendar(date.year, 9)
     )
-    if date.month() == 9 and date.day == diversity_day:
+    if date.month == 9 and date.day == diversity_day:
         return 'dvrs'
 
 
