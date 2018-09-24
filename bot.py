@@ -26,10 +26,12 @@ def load_log(cursor, limit):
 def output_log(text, debug_mode=False):
     # lo uso para ver el output del bot
     date_text = datetime.date.today().strftime('%Y_%m')
-    output_log_path = './logs/' + date_text + '_output_log.txt'
+    output_log_path = './logs/{}_output_log.txt'.format(date_text)
     with open(output_log_path, 'a') as myLog:
-        s = '[' + datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + ']'
-        s = s + text + '\n'
+        s = '[{}] {}\n'.format(
+            datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            text
+        )
         myLog.write(s)
     if debug_mode:
         print(text)
@@ -128,10 +130,13 @@ if __name__ == "__main__":
         if not debug_mode:
             update_log(c, title_id, body_id)
         else:
-            print('Log: ' + str(load_log(c, log_limit)))
+            print('Log: {}'.format(load_log(c, log_limit)))
 
-        title = days[datetime.datetime.today().weekday()] + ' ' + today + '.'
-        body = body + epilogue_text
+        title = '{} {}.'.format(
+            days[datetime.datetime.today().weekday()],
+            today
+        )
+        body = '{} {}'.format(body, epilogue_text)
         output_log(title, debug_mode)
         output_log(body, debug_mode)
 
