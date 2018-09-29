@@ -32,11 +32,27 @@
         ]
     },
     {
+        "id": "bthdy",
+        "title": "de mi cumple",
+        "count": 0,
+        "is_active": true,
+        "day": 6,
+        "month": 3,
+        "bodies": [
+            {
+                "id": "bthdy-01",
+                "count": 0,
+                "is_active": true,
+                "text": "Hoy festejamos mi cumpleaños. Es un honor traer a la mesa todos los días temas de discusión. Hoy les toca a ustedes. ¿Cuáles fueron sus threads favoritos este año?"
+            }
+        ]
+    },
+    {
         "id": "rou",
         "title": "de la independencia de /r/ROU",
         "count": 0,
         "is_active": true,
-        "day": 7,
+        "day": 3,
         "month": 3,
         "bodies": [
             {
