@@ -456,5 +456,34 @@
                 "text": "Situaciones que fueron un llamado a la humildad y te hicieron perder (o no) tu orgullo."
             }
         ]
+    },
+    {
+        "id": "dream",
+        "title": "de los sueños",
+        "count": 0,
+        "is_active": true,
+        "bodies": [
+            {
+                "id": "dream-01",
+                "count": 0,
+                "is_active": true,
+                "text": "Tus aspiraciones en la vida, lo que que deseás que suceda. También valen [esos sueños raros que no te animás a contar ni en terapia](http://www.1morecastle.com/wp-content/uploads/2013/01/Weird-Dreams-Fish-Fight.png)."
+            }
+        ]
+    },
+    {
+        "id": "trips",
+        "title": "de turismo",
+        "count": 0,
+        "is_active": true,
+        "bodies": [
+            {
+                "id": "trips-01",
+                "count": 0,
+                "is_active": true,
+                "text": "¿A dónde has ido y a dónde querés ir? Cosas que te pasaron cuando estabas lejos. Comidas exóticas (y no tanto) que probaste cuando estabas de vacaciones. Lo que sea que consideres que vale la pena contar.\n\nSirve turismo interno."
+            }
+        ]
     }
+
 ]
