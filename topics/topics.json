@@ -24,6 +24,12 @@
                 "count": 0,
                 "is_active": true,
                 "text": "Para salir un poco del tupper. Hay veces que pasa algo en el mundo y dan ganas de comentarlo."
+            },
+            {
+                "id": "int-02",
+                "count": 0,
+                "is_active": true,
+                "text": "¿Qué te gustaría que exista en Uruguay y que hay en otros lugares?"
             }
         ]
     },
@@ -38,7 +44,13 @@
                 "count": 0,
                 "is_active": true,
                 "text": "Have fun. Obscure youtube content is welcome."
-            }
+            },
+	    {
+		"id": "bzrr-02",
+		"count": 0,
+		"is_active": false,
+		"text": "¿Qué es lo más raro que viste en tu vida?"
+	    }
         ]
     },
     {
@@ -58,7 +70,14 @@
                 "count": 0,
                 "is_active": true,
                 "text": "Recomendación de subreddits o cualquier otra cosa. Esos subjetivos que encontraste que sabés que nos pueden gustar van acá."
+            },
+            {
+                "id": "rcmnd-03",
+                "count": 0,
+                "is_active": true,
+                "text": "Tu top cinco de comidas/canciones/películas/videojuegos/lugares/comercios/marcas/cosas."
             }
+
         ]
     },
     {
@@ -162,6 +181,12 @@
                 "count": 0,
                 "is_active": true,
                 "text": "Para los que se acuerdan del Pompa Borges."
+            },
+            {
+                "id": "retro-02",
+                "count": 0,
+                "is_active": true,
+                "text": "¿Qué es eso que hacías con mucha frecuencia y hoy hace tanto que ya no hacés?"
             }
         ]
     },
@@ -400,6 +425,12 @@
                 "count": 0,
                 "is_active": true,
                 "text": "¿Le tenés ganas a tu hermana? ¿Masturbación compulsiva? ¿Te gusta tararear mientras defecás en baños públicos? Es tu lugar. Se aceptan throwaways."
+            },
+            {
+                "id": "cnfsn-02",
+                "count": 0,
+                "is_active": true,
+                "text": "¿Qué secreto no le contarías a tus círculos cercanos pero podrías contar aquí de forma anónima?"
             }
         ]
     },
@@ -414,6 +445,12 @@
                 "count": 0,
                 "is_active": true,
                 "text": "Oportunidades que dejaste pasar y ahora te arrepentís."
+            },
+            {
+                "id": "rgrts-02",
+                "count": 0,
+                "is_active": true,
+                "text": "Algún presentimiento que hayas tenido del estilo \" esto va a terminar mal\""
             }
         ]
     },
@@ -454,7 +491,14 @@
                 "count": 0,
                 "is_active": true,
                 "text": "Situaciones que fueron un llamado a la humildad y te hicieron perder (o no) tu orgullo."
+            },
+            {
+                "id": "pride-04",
+                "count": 0,
+                "is_active": true,
+                "text": "Contanos de la vez que más ganaste."
             }
+
         ]
     },
     {
@@ -468,6 +512,18 @@
                 "count": 0,
                 "is_active": true,
                 "text": "Tus aspiraciones en la vida, lo que que deseás que suceda. También valen [esos sueños raros que no te animás a contar ni en terapia](http://www.1morecastle.com/wp-content/uploads/2013/01/Weird-Dreams-Fish-Fight.png)."
+            },
+            {
+                "id": "dream-02",
+                "count": 0,
+                "is_active": true,
+                "text": "¿Dónde te ves en diez años?"
+            },
+            {
+                "id": "dream-03",
+                "count": 0,
+                "is_active": true,
+                "text": "¿Qué querías ser en tu niñez y qué sos hoy?"
             }
         ]
     },
@@ -484,6 +540,53 @@
                 "text": "¿A dónde has ido y a dónde querés ir? Cosas que te pasaron cuando estabas lejos. Comidas exóticas (y no tanto) que probaste cuando estabas de vacaciones. Lo que sea que consideres que vale la pena contar.\n\nSirve turismo interno."
             }
         ]
+    },
+    {
+	"id": "lgsltr",
+	"title": "de legislación",
+	"count": 0,
+	"is_active": true,
+	"bodies": [
+            {
+                "id": "lgsltr-01",
+                "count": 0,
+                "is_active": true,
+                "text": "Inventá una ley que creas sería necesaria."
+            }
+	]
+    },
+    {
+	"id": "xchng",
+	"title": "de intercambios",
+	"count": 0,
+	"is_active": true,
+	"bodies": [
+            {
+                "id": "xchng-01",
+                "count": 0,
+                "is_active": true,
+                "text": "Si pudieras [intercambiar tu vida con otra persona durante 24 horas](https://youtu.be/nZ8KJ4MzzOw?t=46), ¿con quién te gustaría intercambiar?"
+            }
+	]
+    },
+    {
+	"id": "hstry",
+	"title": "de historia",
+	"count": 0,
+	"is_active": true,
+	"bodies": [
+            {
+                "id": "hstry-01",
+                "count": 0,
+                "is_active": true,
+                "text": "¿Qué personaje histórico te gustaría conocer?"
+            },
+            {
+                "id": "hstry-02",
+                "count": 0,
+                "is_active": true,
+                "text": "¿Sobre qué parte de la historia has leído y pensás que más gente debería conocer?"
+            }
+	]
     }
-
 ]
