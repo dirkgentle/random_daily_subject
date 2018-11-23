@@ -82,5 +82,19 @@
                 "text": "Feliz día de la diversidad para todxs. [Acá les dejo una Natalia Oreiro de la diversidad.](http://fotos.perfil.com/media/images/raw/2018/06/08/20180806-oreiro-natalia-rusia-328668.jpg)"
             }
         ]
+    },
+    {
+        "id": "blk_frdy",
+        "title": "negro",
+        "count": 0,
+        "is_active": true,
+        "bodies": [
+            {
+                "id": "blk_frdy-01",
+                "is_active": true,
+                "count": 0,
+                "text": "¡Es hoy! Pasen piques de ofertas / descuentos para partir la chanchita al medio! ¡No se guarden nada, no sean egoístas! :"
+            }
+        ]
     }
 ] 
