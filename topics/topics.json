@@ -10,6 +10,12 @@
                 "count": 0,
                 "is_active": true,
                 "text": "El rincón culinario. Recetas, piques de cocina, marcas, lugares, compras, comidas bizarras. Serios y burlones son bienvenidos."
+            },
+            {
+                "id": "grmt-02",
+                "count": 0,
+                "is_active": true,
+                "text": "¿Qué cocinaste anoche? ¿Qué vas a almorzar hoy? Tirá ideas/recetas de comidas fáciles y rápidas para la vida cotidiana."
             }
         ]
     },
