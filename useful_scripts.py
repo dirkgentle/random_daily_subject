@@ -1,19 +1,14 @@
 import datetime
 import sqlite3
 
-import db_handler
+from db_handler import DatabaseHandler
 
 
 # update db when the topics are updated
 def update_bot_db():
-    conn = sqlite3.connect('topics.db')
-    c = conn.cursor()
-
-    db_handler.load_topics(c)
-
-    conn.commit()
-    c.close()
-    db_handler.print_topics('topics.db')
+    database = DatabaseHandler('topics.db')
+    database.load_topics()
+    database.print_topics()
 
 
 # set up database for use with the bot
@@ -27,7 +22,8 @@ def set_up_bot():
         and bot_time_minutes < datetime.datetime.now().minute
     )
 
-    db_handler.up_db('topics.db')
+    database = DatabaseHandler('topics.db')
+    database.up_db('topics.db')
     migrate_log_to_db('log.txt', 'topics.db', already_posted)
 
 
