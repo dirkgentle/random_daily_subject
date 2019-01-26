@@ -18,6 +18,24 @@ class DatabaseHandler:
         self.clean_db()
         self.load_topics()
 
+    topic_files = [
+        {
+            'path': 'topics/topics.json',
+            'is_holiday': 0,
+            'is_special': 0
+        },
+        {
+            'path': 'topics/holidays.json',
+            'is_holiday': 1,
+            'is_special': 0
+        },
+        {
+            'path': 'topics/special_days.json',
+            'is_holiday': 0,
+            'is_special': 1
+        }
+    ]
+
     def create_tables_db(self):
         self._cursor.execute('''CREATE TABLE IF NOT EXISTS titles (
             id TEXT PRIMARY KEY,
@@ -59,27 +77,21 @@ class DatabaseHandler:
             )''')
 
     def load_topics(self):
-        with open('topics/topics.json') as f:
-            topics = json.load(f)
-        for topic in topics:
-            self.update_title(topic)
-            for body in topic.get('bodies'):
-                self.update_body(body, topic['id'])
+        for topic_file in self.topic_files:
+            with open(topic_file['path']) as f:
+                topics = json.load(f)
 
-        with open('topics/holidays.json') as f:
-            holidays = json.load(f)
-        for topic in holidays:
-            self.update_title(topic, 1)
-            self.update_holiday(topic)
-            for body in topic.get('bodies'):
-                self.update_body(body, topic['id'])
+            for topic in topics:
+                self.update_title(
+                    topic,
+                    is_holiday=topic['is_holiday'],
+                    is_special=topic['is_special']
+                )
+                if topic['is_holiday']:
+                    self.update_holiday(topic)
 
-        json_data = open('topics/special_days.json').read()
-        special_days = json.loads(json_data)
-        for topic in special_days:
-            self.update_title(topic, 0, 1)
-            for body in topic.get('bodies'):
-                self.update_body(body, topic['id'])
+                for body in topic.get('bodies'):
+                    self.update_body(body, topic['id'])
 
     # update the database section
     def update_title(self, topic, is_holiday=0, is_special=0):
@@ -89,7 +101,8 @@ class DatabaseHandler:
         db_topic = self._cursor.fetchone()
         if not db_topic:
             self._cursor.execute(
-                'INSERT INTO titles VALUES (?, ?, ?, ?, ?, 1, ?, ?)', (
+                'INSERT INTO titles VALUES (?, ?, ?, ?, ?, 1, ?, ?)',
+                (
                     topic['id'],
                     topic['title'],
                     topic['count'],
@@ -103,7 +116,8 @@ class DatabaseHandler:
             self._cursor.execute(
                 '''UPDATE titles SET
                 title=?,is_holiday=?,is_special=?,is_active=1,modified_at=?
-                WHERE id=?''', (
+                WHERE id=?''',
+                (
                     topic['title'],
                     is_holiday,
                     is_special,
@@ -121,7 +135,8 @@ class DatabaseHandler:
         db_body = self._cursor.fetchone()
         if not db_body:
             self._cursor.execute(
-                'INSERT INTO bodies VALUES (?, ?, ?, ?, 1, ?, ?)', (
+                'INSERT INTO bodies VALUES (?, ?, ?, ?, 1, ?, ?)',
+                (
                     body['id'],
                     body['text'],
                     body['count'],
@@ -131,8 +146,10 @@ class DatabaseHandler:
                 ),
             )
         elif db_body[0] == 0 or db_body[1] != body['text']:
-            self._cursor.execute('''UPDATE bodies SET
-                body=?,title_id=?,is_active=1,modified_at=? WHERE id=?''', (
+            self._cursor.execute(
+                '''UPDATE bodies SET
+                body=?,title_id=?,is_active=1,modified_at=? WHERE id=?''',
+                (
                     body['text'],
                     title_id,
                     datetime.datetime.now(),
@@ -142,7 +159,8 @@ class DatabaseHandler:
 
     def update_submitted(self, title_id, body_id=None):
         self._cursor.execute(
-            'INSERT INTO submitted VALUES (NULL, ?, ?, ?, ?)', (
+            'INSERT INTO submitted VALUES (NULL, ?, ?, ?, ?)',
+            (
                 datetime.datetime.now(),
                 datetime.date.today().weekday(),
                 title_id,
@@ -166,7 +184,8 @@ class DatabaseHandler:
         db_topic = self._cursor.fetchone()
         if not db_topic:
             self._cursor.execute(
-                'INSERT INTO holidays VALUES (?, ?, ?, 1, ?, ?)', (
+                'INSERT INTO holidays VALUES (?, ?, ?, 1, ?, ?)',
+                (
                     topic['id'],
                     topic['day'],
                     topic['month'],
@@ -176,9 +195,9 @@ class DatabaseHandler:
             )
         else:
             self._cursor.execute(
-                '''UPDATE holidays SET
-                day=?,month=?,is_active=1,modified_at=?
-                WHERE title_id=?''', (
+                '''UPDATE holidays SET day=?,month=?,is_active=1,modified_at=?
+                WHERE title_id=?''',
+                (
                     topic['day'],
                     topic['month'],
                     datetime.datetime.now(),
@@ -219,8 +238,8 @@ class DatabaseHandler:
         return self._cursor.fetchone()
 
     def get_random_submission(self):
-        [title_id, title] = self.get_random_title()
-        [body_id, body] = self.get_random_body(title_id)
+        title_id, title = self.get_random_title()
+        body_id, body = self.get_random_body(title_id)
         return (title_id, title, body_id, body)
 
     def get_random_title(self):
@@ -246,7 +265,7 @@ class DatabaseHandler:
 
     def get_all_titles(self, get_counts=False):
         """
-        Returns all the titles for normal days.
+        Returns all active titles for normal days.
         """
         sql_cmd = (
             'SELECT id{} FROM titles WHERE '
@@ -258,7 +277,7 @@ class DatabaseHandler:
 
     def get_all_bodies(self, title_id, get_counts=False):
         """
-        Returns all the bodies for a given title_id
+        Returns all active bodies for a given title_id
         """
         sql_cmd = (
             'SELECT id{} FROM bodies WHERE '
@@ -276,13 +295,8 @@ class DatabaseHandler:
     def clean_titles(self):
         all_keys = []
 
-        topic_files = [
-            'topics/topics.json',
-            'topics/holidays.json',
-            'topics/special_days.json'
-        ]
-        for topic_file in topic_files:
-            with open(topic_file) as f:
+        for topic_file in self.topic_files:
+            with open(topic_file['path']) as f:
                 topics = json.load(f)
             all_keys += [topic['id'] for topic in topics]
 
@@ -297,13 +311,8 @@ class DatabaseHandler:
     def clean_bodies(self):
         all_bodies = []
 
-        topic_files = [
-            'topics/topics.json',
-            'topics/holidays.json',
-            'topics/special_days.json'
-        ]
-        for topic_file in topic_files:
-            with open(topic_file) as f:
+        for topic_file in self.topic_files:
+            with open(topic_file['path']) as f:
                 topics = json.load(f)
             all_bodies += [
                 body['id'] for topic in topics for body in topic['bodies']
@@ -331,8 +340,8 @@ class DatabaseHandler:
         titles = self._cursor.fetchall()
         for title in titles:
             print('***************')
-            print('id: ' + title[0])
-            print('title: ' + title[1])
+            print('id: {}'.format(title[0]))
+            print('title: {}'.format(title[1]))
 
             if not title[2]:
                 print('-- INACTIVO --')
