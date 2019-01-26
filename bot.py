@@ -1,26 +1,14 @@
 import datetime
 import getopt
 import random
-import sqlite3
 import sys
 import traceback
 
 import praw
 
-import db_handler
 import login
 import special_days
-
-
-def update_log(cursor, title_id, comment_id):
-    # para los comentarios que ya respondi
-    db_handler.update_submitted(cursor, title_id, comment_id)
-
-
-def load_log(cursor, limit):
-    # para los comentarios que ya respondi
-    aux = db_handler.get_latest_submissions(cursor, limit)
-    return [x[0] for x in aux]
+from db_handler import DatabaseHandler
 
 
 def output_log(text, debug_mode=False):
@@ -37,12 +25,11 @@ def output_log(text, debug_mode=False):
         print(text)
 
 
-def choose_random_title(c, log_limit=6):
-    log = load_log(c, log_limit)
+def choose_random_title(database, log_limit=6):
+    log = database.get_latest_submissions(log_limit)
+    all_titles = database.get_all_titles(get_counts=True)
 
-    c.execute('''SELECT id,count FROM titles WHERE
-        is_active!=0 AND is_holiday==0 AND is_special==0''')
-    options = [option for option in c.fetchall() if option[0] not in log]
+    options = [title for title in all_titles if title[0] not in log]
 
     choosing_bag = []
     count_avg = sum([option[1] for option in options]) / len(options)
@@ -58,12 +45,10 @@ def choose_random_title(c, log_limit=6):
     return random.choice(choosing_bag)
 
 
-def choose_random_body(c, title_id):
-    c.execute(
-        'SELECT id,count FROM bodies WHERE is_active!=0 AND title_id=?',
-        (title_id,)
-    )
-    options = [option for option in c.fetchall()]
+def choose_random_body(database, title_id):
+    options = [
+        option for option in database.get_all_bodies(title_id, get_counts=True)
+    ]
 
     count_avg = sum([option[1] for option in options]) / len(options)
     choosing_bag = [option[0] for option in options if option[1] <= count_avg]
@@ -89,7 +74,6 @@ epilogue_text = (
 
 
 if __name__ == "__main__":
-
     log_path = 'topics.db'
     log_limit = 6
     debug_mode = False
@@ -113,24 +97,23 @@ if __name__ == "__main__":
             user_agent='testscript for /u/random_daily_subject'
         )
 
-        conn = sqlite3.connect(log_path)
-        c = conn.cursor()
+        database = DatabaseHandler(log_path)
 
-        if db_handler.is_today_holiday(c):
-            title_id = db_handler.is_today_holiday(c)[0]
+        if database.is_today_holiday():
+            title_id = database.is_today_holiday()[0]
         elif special_days.is_special_day():
             title_id = special_days.is_special_day()
         else:
-            title_id = choose_random_title(c, 6)
+            title_id = choose_random_title(database, log_limit)
 
-        body_id = choose_random_body(c, title_id)
-        today = db_handler.get_title(c, title_id)[0]
-        body = db_handler.get_body(c, body_id)[0]
+        body_id = choose_random_body(database, title_id)
+        today = database.get_title(title_id)[0]
+        body = database.get_body(body_id)[0]
 
         if not debug_mode:
-            update_log(c, title_id, body_id)
+            database.update_submitted(title_id, body_id)
         else:
-            print('Log: {}'.format(load_log(c, log_limit)))
+            print('Log: {}'.format(database.get_latest_submissions(log_limit)))
 
         title = '{} {}.'.format(
             days[datetime.datetime.today().weekday()],
@@ -158,6 +141,3 @@ if __name__ == "__main__":
         output_log(traceback.format_exc())
         if debug_mode:
             raise(exception)
-    finally:
-        conn.commit()
-        c.close()
