@@ -59,10 +59,10 @@ def choose_random_body(database, title_id):
 days = [
     'Lunes',
     'Martes',
-    'Miercoles',
+    'Miércoles',
     'Jueves',
     'Viernes',
-    'Sabado',
+    'Sábado',
     'Domingo'
     ]
 
