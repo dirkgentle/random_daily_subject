@@ -633,5 +633,19 @@
                 "text": "Compartí con el sub una situación en la que fuiste un sorete. ¿Te arrepentís? ¿No? ¿Por qué?"
             }
 	]
+    },
+    {
+	"id": "crng",
+	"title": "de cringe",
+	"count": 0,
+	"is_active": true,
+	"bodies": [
+            {
+                "id": "crng-01",
+                "count": 0,
+                "is_active": true,
+                "text": "Aprovechá el espacio para contar la última situación incómoda que precensiaste o de la que fuiste parte, sirve vergüenza propia y ajena."
+            }
+	]
     }
 ]
