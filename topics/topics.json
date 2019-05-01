@@ -647,5 +647,19 @@
                 "text": "Aprovechá el espacio para contar la última situación incómoda que precensiaste o de la que fuiste parte, sirve vergüenza propia y ajena."
             }
 	]
+    },
+    {
+	"id": "cncrdnc",
+	"title": "de la concordia",
+	"count": 0,
+	"is_active": true,
+	"bodies": [
+            {
+                "id": "cncrdnc-01",
+                "count": 0,
+                "is_active": true,
+                "text": "¿Podrás lograr encontrar un tema que nos ponga a todos de acuerdo? Es tu chance de intentar."
+            }
+	]
     }
 ]
