@@ -23,7 +23,8 @@ def is_gnocchi_day(date):
 def is_black_friday(date):
     november_calendar = calendar.monthcalendar(date.year, 11)
     black_friday = (
-        november_calendar[3][-3] if november_calendar[0][-3]
+        november_calendar[3][-3]
+        if november_calendar[0][-3]
         else november_calendar[4][-3]
     )
     if date.month == 11 and date.day == black_friday:
@@ -38,7 +39,7 @@ commercial_days = [
 
 
 def week_number_in_month(date):
-    return date.day // 7 + 1
+    return (date.day - 1) // 7 + 1
 
 
 def is_commercial_day(date):
@@ -51,7 +52,8 @@ def is_commercial_day(date):
 
     for commercial_day in commercial_days:
         date_is_commercial_day = (
-            date.weekday() == 6 and date.month == commercial_day['month']
+            date.weekday() == 6
+            and date.month == commercial_day['month']
             and week_number_in_month(date) == 2 + offset
         )
         if date_is_commercial_day:
