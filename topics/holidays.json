@@ -176,6 +176,22 @@
         ]
     },
     {
+        "id": "ddl",
+        "title": "del dulce de leche",
+        "count": 0,
+        "is_active": true,
+        "day": 11,
+        "month": 10,
+        "bodies": [
+            {
+                "id": "ddl-01",
+                "count": 0,
+                "is_active": true,
+                "text": "¡Feliz día del dulce de leche! [Vayan al almacén de la esquina, al supermercado o a su panadería más cercana y disfruten de esta deliciosidad azucarada.](https://www.reddit.com/r/uruguay/comments/cbt3tv/the_more_you_know/)"
+            }
+        ]
+    },
+    {
         "id": "cstms",
         "title": "del despachante de aduanas",
         "count": 0,
