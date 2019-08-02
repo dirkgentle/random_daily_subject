@@ -6,10 +6,11 @@ name = "pypi"
 [dev-packages]
 ipython = "*"
 ipdb = "*"
+black = "*"
+flake8 = "*"
 
 [packages]
 praw = "*"
-black = "*"
 
 [requires]
 python_version = "3.7"
