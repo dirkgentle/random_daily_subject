@@ -1,6 +1,6 @@
-import datetime
 import json
 import sqlite3
+from datetime import datetime
 
 
 class DatabaseHandler:
@@ -102,8 +102,8 @@ class DatabaseHandler:
                     topic["count"],
                     is_holiday,
                     is_special,
-                    datetime.datetime.now(),
-                    datetime.datetime.now(),
+                    datetime.now(),
+                    datetime.now(),
                 ),
             )
         else:
@@ -115,7 +115,7 @@ class DatabaseHandler:
                     topic["title"],
                     is_holiday,
                     is_special,
-                    datetime.datetime.now(),
+                    datetime.now(),
                     topic["id"],
                 ),
             )
@@ -134,23 +134,23 @@ class DatabaseHandler:
                     body["text"],
                     body["count"],
                     title_id,
-                    datetime.datetime.now(),
-                    datetime.datetime.now(),
+                    datetime.now(),
+                    datetime.now(),
                 ),
             )
         elif db_body[0] == 0 or db_body[1] != body["text"]:
             self._cursor.execute(
                 """UPDATE bodies SET
                 body=?,title_id=?,is_active=1,modified_at=? WHERE id=?""",
-                (body["text"], title_id, datetime.datetime.now(), body["id"]),
+                (body["text"], title_id, datetime.now(), body["id"]),
             )
 
     def update_submitted(self, title_id, body_id=None):
         self._cursor.execute(
             "INSERT INTO submitted VALUES (NULL, ?, ?, ?, ?)",
             (
-                datetime.datetime.now(),
-                datetime.date.today().weekday(),
+                datetime.now(),
+                datetime.today().weekday(),
                 title_id,
                 body_id,
             ),
@@ -173,15 +173,15 @@ class DatabaseHandler:
                     topic["id"],
                     topic["day"],
                     topic["month"],
-                    datetime.datetime.now(),
-                    datetime.datetime.now(),
+                    datetime.now(),
+                    datetime.now(),
                 ),
             )
         else:
             self._cursor.execute(
                 """UPDATE holidays SET day=?,month=?,is_active=1,modified_at=?
                 WHERE title_id=?""",
-                (topic["day"], topic["month"], datetime.datetime.now(), topic["id"]),
+                (topic["day"], topic["month"], datetime.now(), topic["id"]),
             )
 
     # db reading section
@@ -193,11 +193,11 @@ class DatabaseHandler:
         return self._cursor.fetchone()
 
     def is_today_holiday(self):
-        return self.is_date_holiday(datetime.datetime.today())
+        return self.is_date_holiday(datetime.today())
 
     def get_latest_submissions(self, n=6):
         self._cursor.execute(
-            "SELECT title_id FROM submitted " "ORDER BY DATETIME(date) DESC LIMIT ?",
+            "SELECT title_id FROM submitted ORDER BY DATETIME(date) DESC LIMIT ?",
             (str(n),),
         )
         return [x[0] for x in self._cursor.fetchall()]
@@ -241,9 +241,9 @@ class DatabaseHandler:
         Returns all active titles for normal days.
         """
         sql_cmd = (
-            "SELECT id{} FROM titles WHERE "
+            f"SELECT id{',count' if get_counts else ''} FROM titles WHERE "
             "is_active!=0 AND is_holiday==0 AND is_special==0"
-        ).format(",count" if get_counts else "")
+        )
 
         self._cursor.execute(sql_cmd)
         return self._cursor.fetchall()
@@ -253,8 +253,9 @@ class DatabaseHandler:
         Returns all active bodies for a given title_id
         """
         sql_cmd = (
-            "SELECT id{} FROM bodies WHERE " "is_active!=0 AND title_id=?"
-        ).format(",count" if get_counts else "")
+            f"SELECT id{',count' if get_counts else ''} FROM bodies WHERE "
+            "is_active!=0 AND title_id=?"
+        )
 
         self._cursor.execute(sql_cmd, (title_id,))
         return self._cursor.fetchall()
@@ -298,9 +299,7 @@ class DatabaseHandler:
 
     # printing data section
     def _print_tables(self, table_name):
-        self._cursor.execute(
-            "SELECT * FROM {}".format(table_name)
-        )  # insecure!!! debug only
+        self._cursor.execute(f"SELECT * FROM {table_name}")  # insecure!!! debug only
         return self._cursor.fetchall()
 
     def print_topics(self):
@@ -310,27 +309,21 @@ class DatabaseHandler:
         titles = self._cursor.fetchall()
         for title in titles:
             print("***************")
-            print("id: {}".format(title[0]))
-            print("title: {}".format(title[1]))
+            print(f"id: {title[0]}")
+            print(f"title: {title[1]}")
 
             if not title[2]:
-                print("-- INACTIVO --")
+                print("-- INACTIVE --")
 
             if title[3]:
                 self._cursor.execute(
                     "SELECT day,month FROM holidays WHERE title_id=?", (title[0],)
                 )
                 date = self._cursor.fetchone()
-                print(
-                    "-- ¡El "
-                    + str(date[0])
-                    + " del "
-                    + str(date[1])
-                    + " es feriado! --"
-                )
+                print(f"-- ¡Day {date[0]} of month {date[1]} is a holiday! --")
 
             if title[4]:
-                print("-- Es un día especial. --")
+                print("-- Is a special day. --")
 
             self._cursor.execute(
                 "SELECT body,is_active FROM bodies WHERE title_id=?", (title[0],)
@@ -338,8 +331,8 @@ class DatabaseHandler:
             bodies = self._cursor.fetchall()
             for body in bodies:
                 if not body[1]:
-                    print("-- INACTIVO --")
-                print("\t" + body[0])
+                    print("-- INACTIVE --")
+                print(f"\t {body[0]}")
                 if not body[1]:
                     print("-- --")
         print("***************")
@@ -349,7 +342,7 @@ class DatabaseHandler:
         submitted = self._cursor.fetchall()
         for submission in submitted:
             print("***************")
-            print(str(submission[1]) + " wday = " + str(submission[2]))
+            print(f"{submission[1]} wday = {submission[2]}")
             self._cursor.execute(
                 "SELECT title FROM titles WHERE id=?", (submission[3],)
             )

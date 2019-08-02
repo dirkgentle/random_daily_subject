@@ -1,5 +1,5 @@
-import calendar
-import datetime
+from calendar import monthcalendar
+from datetime import datetime
 
 
 def is_tuesday(date):
@@ -8,7 +8,7 @@ def is_tuesday(date):
 
 
 def is_diversity_day(date):
-    diversity_day = max(week[-3] for week in calendar.monthcalendar(date.year, 9))
+    diversity_day = max(week[-3] for week in monthcalendar(date.year, 9))
     if date.month == 9 and date.day == diversity_day:
         return "dvrs"
 
@@ -19,7 +19,7 @@ def is_gnocchi_day(date):
 
 
 def is_black_friday(date):
-    november_calendar = calendar.monthcalendar(date.year, 11)
+    november_calendar = monthcalendar(date.year, 11)
     black_friday = (
         november_calendar[3][-3]
         if november_calendar[0][-3]
@@ -56,7 +56,7 @@ def is_commercial_day(date):
             return commercial_day["code"]
 
 
-special_day_checks = [
+SPECIAL_DAY_CHECKS = [
     is_commercial_day,
     is_diversity_day,
     is_tuesday,
@@ -67,9 +67,9 @@ special_day_checks = [
 
 def is_special_day(date=None):
     if date is None:
-        date = datetime.datetime.today()
+        date = datetime.today()
 
-    for special_day_check in special_day_checks:
+    for special_day_check in SPECIAL_DAY_CHECKS:
         title_id = special_day_check(date)
         if title_id:
             return title_id
