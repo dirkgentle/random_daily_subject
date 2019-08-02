@@ -1,8 +1,8 @@
-import datetime
-import getopt
 import random
 import sys
 import traceback
+from datetime import datetime
+from getopt import getopt, GetoptError
 
 import praw
 
@@ -12,14 +12,14 @@ from db_handler import DatabaseHandler
 
 
 def output_log(text, debug_mode=False):
-    # lo uso para ver el output del bot
-    date_text = datetime.date.today().strftime('%Y_%m')
-    output_log_path = './logs/{}_output_log.txt'.format(date_text)
-    with open(output_log_path, 'a') as myLog:
-        s = '[{}] {}\n'.format(
-            datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-            text
-        )
+    """
+    Used to see the bot output.
+    """
+    date_text = datetime.today().strftime("%Y_%m")
+    output_log_path = f"./logs/{date_text}_output_log.txt"
+    with open(output_log_path, "a") as myLog:
+        date_text = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        s = f"[{date_text}] {text}\n"
         myLog.write(s)
     if debug_mode:
         print(text)
@@ -36,8 +36,7 @@ def choose_random_title(database, log_limit=6):
     for option in options:
         # favour those options that haven't come out so much
         multiplier = (
-            1 + int(2 * (count_avg - option[1]))
-            if option[1] < count_avg else 1
+            1 + int(2 * (count_avg - option[1])) if option[1] < count_avg else 1
         )
         for _ in range(multiplier):
             choosing_bag.append(option[0])
@@ -46,9 +45,7 @@ def choose_random_title(database, log_limit=6):
 
 
 def choose_random_body(database, title_id):
-    options = [
-        option for option in database.get_all_bodies(title_id, get_counts=True)
-    ]
+    options = [option for option in database.get_all_bodies(title_id, get_counts=True)]
 
     count_avg = sum([option[1] for option in options]) / len(options)
     choosing_bag = [option[0] for option in options if option[1] <= count_avg]
@@ -56,45 +53,37 @@ def choose_random_body(database, title_id):
     return random.choice(choosing_bag)
 
 
-days = [
-    'Lunes',
-    'Martes',
-    'Miércoles',
-    'Jueves',
-    'Viernes',
-    'Sábado',
-    'Domingo'
-    ]
+WEEKDAY_NAMES = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
 
-epilogue_text = (
-    '\n\n*****\n\n'
-    ' *Another bot by \/u/DirkGentle.*'
-    ' [Source.](https://github.com/dirkgentle/random_daily_subject)'
-    )
+EPILOGUE_TEXT = (
+    "\n\n*****\n\n"
+    " *Another bot by \/u/DirkGentle.*"
+    " [Source.](https://github.com/dirkgentle/random_daily_subject)"
+)
 
 
 if __name__ == "__main__":
-    log_path = 'topics.db'
+    log_path = "topics.db"
     log_limit = 6
     debug_mode = False
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'd', 'debug')
-    except getopt.GetoptError:
-        print('bot.py -d')
+        opts, args = getopt(sys.argv[1:], "d", "debug")
+    except GetoptError:
+        print("bot.py -d")
         sys.exit(2)
     for opt, arg in opts:
-        if opt in ('-d', '--debug'):
+        if opt in ("-d", "--debug"):
             debug_mode = True
 
     try:
-        output_log('Comenzando el script', debug_mode)
+        output_log("Starting script", debug_mode)
         reddit = praw.Reddit(
             client_id=login.client_id,
             client_secret=login.client_secret,
             password=login.password,
             username=login.username,
-            user_agent='testscript for /u/random_daily_subject'
+            user_agent="testscript for /u/random_daily_subject",
         )
 
         database = DatabaseHandler(log_path)
@@ -113,31 +102,23 @@ if __name__ == "__main__":
         if not debug_mode:
             database.update_submitted(title_id, body_id)
         else:
-            print('Log: {}'.format(database.get_latest_submissions(log_limit)))
+            print(f"Log: {database.get_latest_submissions(log_limit)}")
 
-        title = '{} {}.'.format(
-            days[datetime.datetime.today().weekday()],
-            today
-        )
-        body = '{} {}'.format(body, epilogue_text)
+        title = f"{WEEKDAY_NAMES[datetime.today().weekday()]} {today}."
+        body = f"{body} {EPILOGUE_TEXT}"
         output_log(title, debug_mode)
         output_log(body, debug_mode)
 
         if not debug_mode:
-            submission = reddit.subreddit('Uruguay').submit(
-                title, selftext=body
-            )
+            submission = reddit.subreddit("Uruguay").submit(title, selftext=body)
             # set flair
-            template_id = (
-                next(
-                    x for x in submission.flair.choices()
-                    if x['flair_text'] == 'Discusión'
-                )['flair_template_id']
-            )
+            template_id = next(
+                x for x in submission.flair.choices() if x["flair_text"] == "Discusión"
+            )["flair_template_id"]
             submission.flair.select(template_id)
 
     except Exception as exception:
         output_log(str(exception))
         output_log(traceback.format_exc())
         if debug_mode:
-            raise(exception)
+            raise (exception)
