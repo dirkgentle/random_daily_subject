@@ -4,20 +4,18 @@ import datetime
 
 def is_tuesday(date):
     if date.weekday() == 1:
-        return 'rant'
+        return "rant"
 
 
 def is_diversity_day(date):
-    diversity_day = max(
-        week[-3] for week in calendar.monthcalendar(date.year, 9)
-    )
+    diversity_day = max(week[-3] for week in calendar.monthcalendar(date.year, 9))
     if date.month == 9 and date.day == diversity_day:
-        return 'dvrs'
+        return "dvrs"
 
 
 def is_gnocchi_day(date):
     if date.day == 29:
-        return 'noqui'
+        return "noqui"
 
 
 def is_black_friday(date):
@@ -28,13 +26,13 @@ def is_black_friday(date):
         else november_calendar[4][-3]
     )
     if date.month == 11 and date.day == black_friday:
-        return 'blk_frdy'
+        return "blk_frdy"
 
 
 commercial_days = [
-    {'code': 'mthrs', 'month': 5},
-    {'code': 'fthrs', 'month': 7},
-    {'code': 'chldn', 'month': 8}
+    {"code": "mthrs", "month": 5},
+    {"code": "fthrs", "month": 7},
+    {"code": "chldn", "month": 8},
 ]
 
 
@@ -46,18 +44,16 @@ def is_commercial_day(date):
     first_month_day = date.replace(day=1)
     # if the first 10th of the month is after the second weekend
     # the holiday is offset
-    offset = (
-        0 if first_month_day.weekday() < 3 else 1
-    )
+    offset = 0 if first_month_day.weekday() < 3 else 1
 
     for commercial_day in commercial_days:
         date_is_commercial_day = (
             date.weekday() == 6
-            and date.month == commercial_day['month']
+            and date.month == commercial_day["month"]
             and week_number_in_month(date) == 2 + offset
         )
         if date_is_commercial_day:
-            return commercial_day['code']
+            return commercial_day["code"]
 
 
 special_day_checks = [
@@ -65,7 +61,7 @@ special_day_checks = [
     is_diversity_day,
     is_tuesday,
     is_gnocchi_day,
-    is_black_friday
+    is_black_friday,
 ]
 
 
