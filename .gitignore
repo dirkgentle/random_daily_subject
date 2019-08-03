@@ -5,3 +5,5 @@ login.py
 log.txt
 output_log.txt
 launcher.sh
+
+*.swp

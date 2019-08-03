@@ -11,6 +11,25 @@ import special_days
 from db_handler import DatabaseHandler
 
 
+WEEKDAY_NAMES = [
+    "Lunes",
+    "Martes",
+    "Miércoles",
+    "Jueves",
+    "Viernes",
+    "Sábado",
+    "Domingo",
+]
+
+EPILOGUE_TEXT = (
+    "\n\n*****\n\n"
+    " *Another bot by \/u/DirkGentle.*"
+    " [Source.](https://github.com/dirkgentle/random_daily_subject)"
+)
+
+FLAIR_TEXT = "Discusion"
+
+
 def output_log(text, debug_mode=False):
     """
     Used to see the bot output.
@@ -51,15 +70,6 @@ def choose_random_body(database, title_id):
     choosing_bag = [option[0] for option in options if option[1] <= count_avg]
 
     return random.choice(choosing_bag)
-
-
-WEEKDAY_NAMES = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
-
-EPILOGUE_TEXT = (
-    "\n\n*****\n\n"
-    " *Another bot by \/u/DirkGentle.*"
-    " [Source.](https://github.com/dirkgentle/random_daily_subject)"
-)
 
 
 if __name__ == "__main__":
@@ -113,7 +123,7 @@ if __name__ == "__main__":
             submission = reddit.subreddit("Uruguay").submit(title, selftext=body)
             # set flair
             template_id = next(
-                x for x in submission.flair.choices() if x["flair_text"] == "Discusión"
+                x for x in submission.flair.choices() if x["flair_text"] == FLAIR_TEXT
             )["flair_template_id"]
             submission.flair.select(template_id)
 
