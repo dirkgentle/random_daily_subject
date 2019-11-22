@@ -1,5 +1,5 @@
 from calendar import monthcalendar
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 def is_tuesday(date):
@@ -19,13 +19,19 @@ def is_gnocchi_day(date):
 
 
 def is_black_friday(date):
+    """
+    Black Friday is the day after thanksgiving (fourth Thursday of November)
+    """
     november_calendar = monthcalendar(date.year, 11)
-    black_friday = (
-        november_calendar[3][-3]
-        if november_calendar[0][-3]
-        else november_calendar[4][-3]
+    thanksgiving_cal_day = (
+        november_calendar[3][-4]
+        if november_calendar[0][-4]
+        else november_calendar[4][-4]
     )
-    if date.month == 11 and date.day == black_friday:
+    thanksgiving = datetime(year=date.year, month=11, day=thanksgiving_cal_day)
+    black_friday = thanksgiving + timedelta(days=1)
+
+    if date.month == black_friday.month and date.day == black_friday.day:
         return "blk_frdy"
 
 
