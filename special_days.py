@@ -65,9 +65,9 @@ def is_commercial_day(date):
 SPECIAL_DAY_CHECKS = [
     is_commercial_day,
     is_diversity_day,
+    is_black_friday,
     is_tuesday,
     is_gnocchi_day,
-    is_black_friday,
 ]
 
 
