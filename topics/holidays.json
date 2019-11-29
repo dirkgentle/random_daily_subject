@@ -192,6 +192,22 @@
         ]
     },
     {
+        "id": "mensday",
+        "title": "internacional del hombre",
+        "count": 0,
+        "is_active": true,
+        "day": 19,
+        "month": 11,
+        "bodies": [
+            {
+                "id": "mensday-01",
+                "count": 0,
+                "is_active": true,
+                "text": "El día internacional del hombre se formó como idea a principios de 1991 y fue establecido posteriormente en 1992. Pero no fue sino hasta 1999 que se empezó a celebrar internacionalmente. Los temas que se abarcan son variados, con un especial énfasis en tomar conciencia sobre la salud y bienestar de los varones, y seguir promoviendo la igualdad de genero en todas las áreas."
+            }
+        ]
+    },
+    {
         "id": "cstms",
         "title": "del despachante de aduanas",
         "count": 0,
