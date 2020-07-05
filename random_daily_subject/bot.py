@@ -28,6 +28,7 @@ EPILOGUE_TEXT = (
 )
 
 FLAIR_TEXT = "Discusion"
+LOGS_FOLDER = "../logs"
 
 
 def output_log(text, debug_mode=False):
@@ -35,7 +36,7 @@ def output_log(text, debug_mode=False):
     Used to see the bot output.
     """
     date_text = datetime.today().strftime("%Y_%m")
-    output_log_path = f"./logs/{date_text}_output_log.txt"
+    output_log_path = f"{LOGS_FOLDER}/{date_text}_output_log.txt"
     with open(output_log_path, "a") as myLog:
         date_text = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         s = f"[{date_text}] {text}\n"
@@ -73,7 +74,7 @@ def choose_random_body(database, title_id):
 
 
 if __name__ == "__main__":
-    log_path = "topics.db"
+    db_path = "../db/topics.db"
     log_limit = 6
     debug_mode = BasicConfig.debug_mode
 
@@ -97,7 +98,7 @@ if __name__ == "__main__":
             user_agent="testscript for /u/random_daily_subject",
         )
 
-        database = DatabaseHandler(log_path)
+        database = DatabaseHandler(db_path)
 
         if database.is_today_holiday():
             title_id = database.is_today_holiday()[0]
