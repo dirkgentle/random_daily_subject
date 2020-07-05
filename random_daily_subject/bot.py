@@ -6,8 +6,8 @@ from getopt import getopt, GetoptError
 
 import praw
 
-import login
 import special_days
+from config import RedditConfig, BasicConfig
 from db_handler import DatabaseHandler
 
 
@@ -75,24 +75,25 @@ def choose_random_body(database, title_id):
 if __name__ == "__main__":
     log_path = "topics.db"
     log_limit = 6
-    debug_mode = False
+    debug_mode = BasicConfig.debug_mode
 
-    try:
-        opts, args = getopt(sys.argv[1:], "d", "debug")
-    except GetoptError:
-        print("bot.py -d")
-        sys.exit(2)
-    for opt, arg in opts:
-        if opt in ("-d", "--debug"):
-            debug_mode = True
+    if not debug_mode:
+        try:
+            opts, args = getopt(sys.argv[1:], "d", "debug")
+        except GetoptError:
+            print("bot.py -d")
+            sys.exit(2)
+        for opt, arg in opts:
+            if opt in ("-d", "--debug"):
+                debug_mode = True
 
     try:
         output_log("Starting script", debug_mode)
         reddit = praw.Reddit(
-            client_id=login.client_id,
-            client_secret=login.client_secret,
-            password=login.password,
-            username=login.username,
+            client_id=RedditConfig.client_id,
+            client_secret=RedditConfig.client_secret,
+            password=RedditConfig.password,
+            username=RedditConfig.username,
             user_agent="testscript for /u/random_daily_subject",
         )
 
