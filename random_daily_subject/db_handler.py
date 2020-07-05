@@ -2,11 +2,22 @@ import json
 import sqlite3
 from datetime import datetime
 
+JSON_FOLDER = "../topics"
+
 
 class DatabaseHandler:
     def __init__(self, db_name):
         self._conn = sqlite3.connect(db_name)
         self._cursor = self._conn.cursor()
+        self.topic_files = [
+            {"path": f"{JSON_FOLDER}/topics.json", "is_holiday": 0, "is_special": 0},
+            {"path": f"{JSON_FOLDER}/holidays.json", "is_holiday": 1, "is_special": 0},
+            {
+                "path": f"{JSON_FOLDER}/special_days.json",
+                "is_holiday": 0,
+                "is_special": 1,
+            },
+        ]
 
     def __del__(self):
         self._conn.commit()
@@ -17,12 +28,6 @@ class DatabaseHandler:
         self.create_tables_db()
         self.clean_db()
         self.load_topics()
-
-    topic_files = [
-        {"path": "topics/topics.json", "is_holiday": 0, "is_special": 0},
-        {"path": "topics/holidays.json", "is_holiday": 1, "is_special": 0},
-        {"path": "topics/special_days.json", "is_holiday": 0, "is_special": 1},
-    ]
 
     def create_tables_db(self):
         self._cursor.execute(
@@ -111,13 +116,7 @@ class DatabaseHandler:
                 """UPDATE titles SET
                 title=?,is_holiday=?,is_special=?,is_active=1,modified_at=?
                 WHERE id=?""",
-                (
-                    topic["title"],
-                    is_holiday,
-                    is_special,
-                    datetime.now(),
-                    topic["id"],
-                ),
+                (topic["title"], is_holiday, is_special, datetime.now(), topic["id"],),
             )
         return self._cursor.lastrowid
 
@@ -148,12 +147,7 @@ class DatabaseHandler:
     def update_submitted(self, title_id, body_id=None):
         self._cursor.execute(
             "INSERT INTO submitted VALUES (NULL, ?, ?, ?, ?)",
-            (
-                datetime.now(),
-                datetime.today().weekday(),
-                title_id,
-                body_id,
-            ),
+            (datetime.now(), datetime.today().weekday(), title_id, body_id,),
         )
         self._cursor.execute(
             "UPDATE titles SET count = count + 1 WHERE id=?", (title_id,)
