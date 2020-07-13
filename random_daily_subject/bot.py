@@ -1,4 +1,3 @@
-import random
 import sys
 import traceback
 from datetime import datetime
@@ -7,8 +6,10 @@ from getopt import getopt, GetoptError
 import praw
 
 import special_days
-from config import RedditConfig, BasicConfig
-from db_handler import DatabaseHandler
+from config import AuthConfig, BasicConfig
+from db_handler import DBHandler
+from logger import output_log
+from random_post import choose_random_body, choose_random_title
 
 
 WEEKDAY_NAMES = [
@@ -28,53 +29,9 @@ EPILOGUE_TEXT = (
 )
 
 FLAIR_TEXT = "Discusion"
-LOGS_FOLDER = "../logs"
-
-
-def output_log(text, debug_mode=False):
-    """
-    Used to see the bot output.
-    """
-    date_text = datetime.today().strftime("%Y_%m")
-    output_log_path = f"{LOGS_FOLDER}/{date_text}_output_log.txt"
-    with open(output_log_path, "a") as myLog:
-        date_text = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        s = f"[{date_text}] {text}\n"
-        myLog.write(s)
-    if debug_mode:
-        print(text)
-
-
-def choose_random_title(database, log_limit=6):
-    log = database.get_latest_submissions(log_limit)
-    all_titles = database.get_all_titles(get_counts=True)
-
-    options = [title for title in all_titles if title[0] not in log]
-
-    choosing_bag = []
-    count_avg = sum([option[1] for option in options]) / len(options)
-    for option in options:
-        # favour those options that haven't come out so much
-        multiplier = (
-            1 + int(2 * (count_avg - option[1])) if option[1] < count_avg else 1
-        )
-        for _ in range(multiplier):
-            choosing_bag.append(option[0])
-
-    return random.choice(choosing_bag)
-
-
-def choose_random_body(database, title_id):
-    options = [option for option in database.get_all_bodies(title_id, get_counts=True)]
-
-    count_avg = sum([option[1] for option in options]) / len(options)
-    choosing_bag = [option[0] for option in options if option[1] <= count_avg]
-
-    return random.choice(choosing_bag)
 
 
 if __name__ == "__main__":
-    db_path = "../db/topics.db"
     log_limit = 6
     debug_mode = BasicConfig.debug_mode
 
@@ -91,29 +48,29 @@ if __name__ == "__main__":
     try:
         output_log("Starting script", debug_mode)
         reddit = praw.Reddit(
-            client_id=RedditConfig.client_id,
-            client_secret=RedditConfig.client_secret,
-            password=RedditConfig.password,
-            username=RedditConfig.username,
+            client_id=AuthConfig.client_id,
+            client_secret=AuthConfig.client_secret,
+            password=AuthConfig.password,
+            username=AuthConfig.username,
             user_agent="testscript for /u/random_daily_subject",
         )
 
-        database = DatabaseHandler(db_path)
+        database = DBHandler()
+        today = datetime.today()
 
-        if database.is_today_holiday():
-            title_id = database.is_today_holiday()[0]
+        if database.is_date_holiday(today):
+            title_id = database.get_date_holiday(today)
         elif special_days.is_special_day():
             title_id = special_days.is_special_day()
         else:
             title_id = choose_random_title(database, log_limit)
 
         body_id = choose_random_body(database, title_id)
-        today = database.get_title(title_id)[0]
-        body = database.get_body(body_id)[0]
+        today = database.get_title(title_id).title
+        body = database.get_body(body_id).body
 
-        if not debug_mode:
-            database.update_submitted(title_id, body_id)
-        else:
+        database.add_submission(title_id, body_id)
+        if debug_mode:
             print(f"Log: {database.get_latest_submissions(log_limit)}")
 
         title = f"{WEEKDAY_NAMES[datetime.today().weekday()]} {today}."
@@ -122,7 +79,9 @@ if __name__ == "__main__":
         output_log(body, debug_mode)
 
         if not debug_mode:
-            submission = reddit.subreddit("Uruguay").submit(title, selftext=body)
+            submission = reddit.subreddit(BasicConfig.subreddit).submit(
+                title, selftext=body
+            )
             # set flair
             template_id = next(
                 x for x in submission.flair.choices() if x["flair_text"] == FLAIR_TEXT
