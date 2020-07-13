@@ -1,5 +1,5 @@
 import json
-from datetime import date, datetime
+from datetime import datetime
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -106,14 +106,14 @@ class DBHandler:
 
         self.session.commit()
 
-    def add_submission(self, title_id, body_id=None, date=None):
+    def add_submission(self, title_id, body_id=None, sub_date=None):
         """
         Add a submission to the db.
         """
-        if date is None:
-            date = datetime.now()
+        if sub_date is None:
+            sub_date = datetime.now()
 
-        submission = Submission(date=date, weekday=date.weekday())
+        submission = Submission(date=sub_date, weekday=sub_date.weekday())
 
         submission.title = self.session.query(Title).filter_by(id=title_id).one()
         submission.title.count += 1
@@ -149,7 +149,11 @@ class DBHandler:
         """
         Get all available titles.
         """
-        return self.session.query(Title).all()
+        return (
+            self.session.query(Title)
+            .filter_by(is_holiday=False, is_special=False)
+            .all()
+        )
 
     def get_title(self, title_id):
         """
@@ -173,7 +177,7 @@ class DBHandler:
         """
         Return the last `n` submissions from the db.
         """
-        return self.session.query(Submission).order_by(Submission.date.asc())[:n]
+        return self.session.query(Submission).order_by(Submission.date.desc())[:n]
 
     def print_topics(self):
         """
