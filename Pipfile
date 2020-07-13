@@ -11,6 +11,7 @@ ipdb = "*"
 
 [packages]
 praw = "*"
+sqlalchemy = "*"
 
 [requires]
 python_version = "3.8"

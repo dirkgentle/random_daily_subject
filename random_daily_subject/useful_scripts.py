@@ -1,13 +1,15 @@
 import datetime
 import sqlite3
 
-from db_handler import DatabaseHandler
+from db_handler import DBHandler
+from config import BasicConfig
 
 
 # update db when the topics are updated
 def update_bot_db():
-    database = DatabaseHandler("topics.db")
+    database = DBHandler(BasicConfig.db_path)
     database.load_topics()
+    database.clean_topics()
     database.print_topics()
 
 
@@ -22,9 +24,8 @@ def set_up_bot():
         and bot_time_minutes < datetime.datetime.now().minute
     )
 
-    database = DatabaseHandler("topics.db")
-    database.up_db("topics.db")
-    migrate_log_to_db("log.txt", "topics.db", already_posted)
+    _ = DBHandler(BasicConfig.db_path)
+    migrate_log_to_db("log.txt", BasicConfig.db_path, already_posted)
 
 
 def add_debug_columns():
@@ -82,5 +83,54 @@ def migrate_log_to_db(log_path, db_name, already_posted_today):
         c.execute("UPDATE titles SET count = count + 1 WHERE id=?", (title_id,))
         if body_id:
             c.execute("UPDATE bodies SET count = count + 1 WHERE id=?", (body_id,))
+    conn.commit()
+    c.close()
+
+
+def fix_submitted_primary_key():
+    """
+    In an older version all submissions had NULL as their primary key.
+    """
+    conn = sqlite3.connect("../db/topics.db")
+    c = conn.cursor()
+
+    old_rows = c.execute("SELECT * FROM submitted").fetchall()
+
+    c.execute("DROP TABLE submitted")
+    c.execute(
+        """CREATE TABLE IF NOT EXISTS submitted (
+        id INTEGER PRIMARY KEY,
+        date TEXT NOT NULL,
+        weekday INTEGER,
+        title_id TEXT NOT NULL,
+        body_id TEXT,
+        FOREIGN KEY(title_id) REFERENCES titles(id),
+        FOREIGN KEY(body_id) REFERENCES bodies(id)
+        )"""
+    )
+
+    for idx, (id, date, weekday, title_id, body_id) in enumerate(old_rows, 1):
+        c.execute(
+            "INSERT INTO submitted VALUES (?, ?, ?, ?, ?)",
+            (idx, date, weekday, title_id, body_id),
+        )
+
+    conn.commit()
+    c.close()
+
+
+def fix_submitted_date():
+    """
+    Older submissions have dates instead of datetime.
+    """
+    conn = sqlite3.connect("../db/topics.db")
+    c = conn.cursor()
+
+    old_rows = c.execute("SELECT id, date FROM submitted").fetchall()
+    for id, date in old_rows:
+        if ":" not in date:
+            parsed = str(datetime.datetime.strptime(date, "%Y-%m-%d"))
+            c.execute("UPDATE submitted SET date=? WHERE id=?", (parsed, id))
+
     conn.commit()
     c.close()
