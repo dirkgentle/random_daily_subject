@@ -142,7 +142,7 @@ class DBHandler:
             self.session.query(Holiday)
             .filter_by(day=date.day, month=date.month)
             .one()
-            .title
+            .title.id
         )
 
     def get_all_titles(self):
