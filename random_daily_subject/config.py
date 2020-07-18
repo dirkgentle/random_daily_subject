@@ -1,4 +1,7 @@
 import os
+from typing import Dict, Union
+
+TopicFile = Dict[str, Union[str, bool]]
 
 
 class AuthConfig:
@@ -12,9 +15,9 @@ class BasicConfig:
     debug_mode = bool(os.getenv("DEBUG"))
     subreddit = "Uruguay" if not debug_mode else "test"
 
-    logs_folder = "../logs"
-    db_path = "sqlite:///../db/topics.db"
-    json_folder = "../topics"
+    logs_folder = "./logs"
+    db_path = "sqlite:///./db/topics.db"
+    json_folder = "./topics"
     topic_files = [
         {"path": f"{json_folder}/topics.json"},
         {"path": f"{json_folder}/holidays.json", "is_holiday": True},
