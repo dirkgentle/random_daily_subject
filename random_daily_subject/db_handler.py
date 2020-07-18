@@ -158,12 +158,12 @@ class DBHandler:
             self.session.query(Holiday)
             .filter_by(day=date.day, month=date.month)
             .one()
-            .title.id
+            .title
         )
 
-    def get_all_titles(self):
+    def get_all_titles(self) -> List[Title]:
         """
-        Get all available titles.
+        Get all available titles that are not holidays or special days.
         """
         return (
             self.session.query(Title)
@@ -171,31 +171,31 @@ class DBHandler:
             .all()
         )
 
-    def get_title(self, title_id):
+    def get_title(self, title_id: str) -> Title:
         """
-        Get a title text from its title id.
+        Get a title from its title id.
         """
         return self.session.query(Title).filter_by(id=title_id).one()
 
-    def get_all_bodies(self, title_id):
+    def get_all_bodies(self, title_id: str) -> List[Body]:
         """
         Get all available bodies for a specific title.
         """
         return self.session.query(Body).filter_by(title_id=title_id).all()
 
-    def get_body(self, body_id):
+    def get_body(self, body_id: str) -> Body:
         """
         Get a title text from its title id.
         """
         return self.session.query(Body).filter_by(id=body_id).one()
 
-    def get_latest_submissions(self, n=6):
+    def get_latest_submissions(self, n: int = 6) -> List[Submission]:
         """
         Return the last `n` submissions from the db.
         """
         return self.session.query(Submission).order_by(Submission.date.desc())[:n]
 
-    def print_topics(self):
+    def print_topics(self) -> None:
         """
         Human readable view of the topics from the db.
         """
@@ -220,7 +220,7 @@ class DBHandler:
                     print("-- --")
         print("*" * 15)
 
-    def print_submitted(self):
+    def print_submitted(self) -> None:
         """
         Human readable view of the db submissions.
         """

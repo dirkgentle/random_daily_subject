@@ -31,7 +31,7 @@ def bot(
     output_log("Starting script", debug_mode)
 
     if db_handler.is_date_holiday(date):
-        title_id = db_handler.get_date_holiday(date)
+        title_id = db_handler.get_date_holiday(date).id
     elif special_days.is_special_day(date):
         title_id = special_days.is_special_day(date)
     else:
