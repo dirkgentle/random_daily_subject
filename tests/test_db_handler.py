@@ -9,90 +9,6 @@ from random_daily_subject.db_handler import DBHandler
 from random_daily_subject.models import Body, Holiday, Submission, Title
 
 
-@pytest.fixture
-def db_handler() -> DBHandler:
-    db_handler = DBHandler("sqlite:///:memory:")
-    return db_handler
-
-
-@pytest.fixture
-def topic_files() -> List[TopicFile]:
-    return [
-        {"path": "./tests/topics/topics.json"},
-        {"path": "./tests/topics/holidays.json", "is_holiday": True},
-        {"path": "./tests/topics/special_days.json", "is_special": True},
-    ]
-
-
-@pytest.fixture
-def empty_files() -> List[TopicFile]:
-    return [
-        {"path": "./tests/topics/empty.json"},
-        {"path": "./tests/topics/empty.json", "is_holiday": True},
-        {"path": "./tests/topics/empty.json", "is_special": True},
-    ]
-
-
-@pytest.fixture
-def sample_title() -> Title:
-    return Title(
-        id="grmt",
-        title="gourmet",
-        count=0,
-        is_holiday=False,
-        is_special=False,
-        is_active=True,
-        bodies=[
-            Body(id="grmt-01", count=0, is_active=True, body="El rincon culinario."),
-            Body(id="grmt-02", count=1, is_active=True, body="Que cocinaste anoche?"),
-        ],
-    )
-
-
-@pytest.fixture
-def sample_holiday() -> Holiday:
-    return Holiday(
-        title_id="nwyr",
-        day=1,
-        month=1,
-        is_active=True,
-        title=Title(title="de año nuevo"),
-    )
-
-
-@pytest.fixture
-def sample_no_holiday() -> Holiday:
-    """This should not be a holiday in the db."""
-    return Holiday(title_id="no-holiday", day=2, month=1)
-
-
-@pytest.fixture
-def sample_inactive_holiday() -> Holiday:
-    return Holiday(
-        title_id="fake-hldy",
-        day=5,
-        month=1,
-        is_active=False,
-        title=Title(id="nwyr", title="fake holiday"),
-    )
-
-
-@pytest.fixture
-def sample_submission() -> Submission:
-    return Submission(
-        date=datetime(day=18, month=7, year=2020),
-        weekday=6,
-        title_id="grmt",
-        body_id="grmt-01",
-    )
-
-
-@pytest.fixture
-def loaded_db(db_handler: DBHandler, topic_files: List[TopicFile]) -> DBHandler:
-    db_handler.load_topics(topic_files)
-    return db_handler
-
-
 def test_load_topics(loaded_db: DBHandler, topic_files: List[TopicFile]) -> None:
     for topic_file in topic_files:
         with open(topic_file["path"]) as f:
@@ -236,16 +152,13 @@ def test_get_body(loaded_db: DBHandler, sample_title: Title) -> None:
     assert body.body == sample_body.body
 
 
-def test_get_latest_submissions(loaded_db, sample_submission: Submission) -> None:
-    n = 6
-    for _ in range(n):
-        loaded_db.add_submission(
-            title_id=sample_submission.title_id, body_id=sample_submission.body_id
-        )
+def test_get_latest_submissions(
+    db_with_history: DBHandler, sample_submission: Submission
+) -> None:
+    n = 3
+    latest_submissions = db_with_history.get_latest_submissions(n)
 
-    latest_submissions = loaded_db.get_latest_submissions(n)
-
-    assert len(latest_submissions) == 6
+    assert len(latest_submissions) == n
     assert all(isinstance(sub, Submission) for sub in latest_submissions)
     assert all(
         sub1.date > sub2.date

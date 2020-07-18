@@ -1,0 +1,78 @@
+[
+    {
+        "id": "grmt",
+        "title": "gourmet",
+        "count": 0,
+        "bodies": [
+            {
+                "id": "grmt-01",
+                "count": 0,
+                "is_active": true,
+                "text": "El rincon culinario."
+            },
+            {
+                "id": "grmt-02",
+                "count": 1,
+                "text": "Que cocinaste anoche?"
+            },
+            {
+                "id": "grmt-03",
+                "count": 3,
+                "text": "Sample 3"
+            },
+            {
+                "id": "grmt-04",
+                "count": 4,
+                "text": "Sample 4"
+            } 
+        ]
+    },
+    {
+        "id": "int",
+        "title": "de internacionales",
+        "count": 2,
+        "is_active": true,
+        "bodies": [
+            {
+                "id": "int-01",
+                "count": 0,
+                "is_active": true,
+                "text": "Para salir un poco del tupper."
+            },
+            {
+                "id": "int-02",
+                "count": 0,
+                "is_active": false,
+                "text": "Que te gustaria que exista en Uruguay?"
+            }
+        ]
+    },
+    {
+        "id": "bzrr",
+        "title": "de bizarreada",
+        "count": 0,
+        "is_active": true,
+        "bodies": [
+            {
+                "id": "bzrr-01",
+                "count": 0,
+                "is_active": true,
+                "text": "Have fun. Obscure youtube content is welcome."
+            }
+        ]
+    },
+    {
+        "id": "rcmnd",
+        "title": "de recomendaciones",
+        "count": 0,
+        "is_active": true,
+        "bodies": [
+            {
+                "id": "rcmnd-01",
+                "count": 0,
+                "is_active": true,
+                "text": "Gaming, compras, series, etc."
+            }
+        ]
+    }
+]
