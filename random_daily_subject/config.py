@@ -20,3 +20,21 @@ class BasicConfig:
         {"path": f"{json_folder}/holidays.json", "is_holiday": True},
         {"path": f"{json_folder}/special_days.json", "is_special": True},
     ]
+
+    weekday_names = [
+        "Lunes",
+        "Martes",
+        "Miércoles",
+        "Jueves",
+        "Viernes",
+        "Sábado",
+        "Domingo",
+    ]
+
+    epilogue_text = (
+        "\n\n*****\n\n"
+        " *Another bot by \/u/DirkGentle.*"
+        " [Source.](https://github.com/dirkgentle/random_daily_subject)"
+    )
+
+    flair_text = "Discusion"
