@@ -1,26 +1,30 @@
 import json
 from datetime import datetime
+from typing import List, Optional
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from models import Base, Body, Holiday, Submission, Title
-from config import BasicConfig
+from .models import Base, Body, Holiday, Submission, Title
+from .config import BasicConfig, TopicFile
 
 
 class DBHandler:
-    def __init__(self):
-        self.engine = create_engine(BasicConfig.db_path)
+    def __init__(self, db_path: str = BasicConfig.db_path) -> None:
+        self.engine = create_engine(db_path)
 
         Base.metadata.create_all(self.engine)
 
         Session = sessionmaker(bind=self.engine)
         self.session = Session()
 
-    def load_topics(self):
+    def load_topics(
+        self, topic_files: List[TopicFile] = BasicConfig.topic_files
+    ) -> None:
         """
         Load all topics from JSON files into the target database.
         """
-        for topic_file in BasicConfig.topic_files:
+        for topic_file in topic_files:
             with open(topic_file["path"]) as f:
                 topics = json.load(f)
 
@@ -42,7 +46,7 @@ class DBHandler:
                 title.is_holiday = is_holiday
                 title.is_special = is_special
                 title.modified_at = now
-                title.is_active = True
+                title.is_active = topic.get("is_active", True)
 
                 if is_holiday:
                     holiday = (
@@ -56,7 +60,7 @@ class DBHandler:
                     holiday.day = topic["day"]
                     holiday.month = topic["month"]
                     holiday.modified_at = now
-                    holiday.is_active = True
+                    holiday.is_active = topic.get("is_active", True)
 
                     title.holidays = [holiday]
 
@@ -71,19 +75,21 @@ class DBHandler:
 
                     db_body.body = body["text"]
                     db_body.modified_at = now
-                    db_body.is_active = True
+                    db_body.is_active = body.get("is_active", True)
 
                     title.bodies.append(db_body)
 
                 self.session.add(title)
         self.session.commit()
 
-    def clean_topics(self):
+    def clean_topics(
+        self, topic_files: List[TopicFile] = BasicConfig.topic_files
+    ) -> None:
         """
         Deactivate topics not present in the topic files.
         """
         active_topics = []
-        for topic_file in BasicConfig.topic_files:
+        for topic_file in topic_files:
             with open(topic_file["path"]) as f:
                 topics = json.load(f)
             active_topics += topics
@@ -99,6 +105,11 @@ class DBHandler:
                 db_title.is_active = False
                 db_title.modified_at = now
 
+        for db_holiday in self.session.query(Holiday).filter_by(is_active=True):
+            if db_holiday.title_id not in active_titles:
+                db_holiday.is_active = False
+                db_title.modified_at = now
+
         for db_body in self.session.query(Body).filter_by(is_active=True):
             if db_body.id not in active_bodies:
                 db_body.is_active = False
@@ -106,7 +117,12 @@ class DBHandler:
 
         self.session.commit()
 
-    def add_submission(self, title_id, body_id=None, sub_date=None):
+    def add_submission(
+        self,
+        title_id: str,
+        body_id: Optional[str] = None,
+        sub_date: Optional[datetime] = None,
+    ) -> None:
         """
         Add a submission to the db.
         """
@@ -124,17 +140,17 @@ class DBHandler:
         self.session.add(submission)
         self.session.commit()
 
-    def is_date_holiday(self, date):
+    def is_date_holiday(self, date: datetime) -> None:
         """
         Check if a given date is a holiday or not.
         """
         return bool(
             self.session.query(Holiday)
-            .filter_by(day=date.day, month=date.month)
+            .filter_by(day=date.day, month=date.month, is_active=True)
             .one_or_none()
         )
 
-    def get_date_holiday(self, date):
+    def get_date_holiday(self, date: datetime) -> Holiday:
         """
         Returns the title object for a given date if it's a holiday
         """
@@ -142,12 +158,12 @@ class DBHandler:
             self.session.query(Holiday)
             .filter_by(day=date.day, month=date.month)
             .one()
-            .title.id
+            .title
         )
 
-    def get_all_titles(self):
+    def get_all_titles(self) -> List[Title]:
         """
-        Get all available titles.
+        Get all available titles that are not holidays or special days.
         """
         return (
             self.session.query(Title)
@@ -155,31 +171,31 @@ class DBHandler:
             .all()
         )
 
-    def get_title(self, title_id):
+    def get_title(self, title_id: str) -> Title:
         """
-        Get a title text from its title id.
+        Get a title from its title id.
         """
         return self.session.query(Title).filter_by(id=title_id).one()
 
-    def get_all_bodies(self, title_id):
+    def get_all_bodies(self, title_id: str) -> List[Body]:
         """
         Get all available bodies for a specific title.
         """
         return self.session.query(Body).filter_by(title_id=title_id).all()
 
-    def get_body(self, body_id):
+    def get_body(self, body_id: str) -> Body:
         """
         Get a title text from its title id.
         """
         return self.session.query(Body).filter_by(id=body_id).one()
 
-    def get_latest_submissions(self, n=6):
+    def get_latest_submissions(self, n: int = 6) -> List[Submission]:
         """
         Return the last `n` submissions from the db.
         """
         return self.session.query(Submission).order_by(Submission.date.desc())[:n]
 
-    def print_topics(self):
+    def print_topics(self) -> None:
         """
         Human readable view of the topics from the db.
         """
@@ -204,7 +220,7 @@ class DBHandler:
                     print("-- --")
         print("*" * 15)
 
-    def print_submitted(self):
+    def print_submitted(self) -> None:
         """
         Human readable view of the db submissions.
         """

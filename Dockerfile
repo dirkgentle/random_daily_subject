@@ -10,7 +10,6 @@ COPY poetry.lock .
 RUN poetry install --no-dev
 
 COPY random_daily_subject ./random_daily_subject
+RUN poetry install --no-dev
 
-WORKDIR /random_daily_subject/random_daily_subject
-
-CMD ["poetry", "run", "python", "bot.py"]
+CMD ["poetry", "run", "python", "random_daily_subject/bot.py"]

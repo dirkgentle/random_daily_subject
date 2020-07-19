@@ -1,24 +1,25 @@
 from calendar import monthcalendar
 from datetime import datetime, timedelta
+from typing import Optional
 
 
-def is_tuesday(date):
+def is_tuesday(date: datetime) -> Optional[str]:
     if date.weekday() == 1:
         return "rant"
 
 
-def is_diversity_day(date):
+def is_diversity_day(date: datetime) -> Optional[str]:
     diversity_day = max(week[-3] for week in monthcalendar(date.year, 9))
     if date.month == 9 and date.day == diversity_day:
         return "dvrs"
 
 
-def is_gnocchi_day(date):
+def is_gnocchi_day(date: datetime) -> Optional[str]:
     if date.day == 29:
         return "noqui"
 
 
-def is_black_friday(date):
+def is_black_friday(date: datetime) -> Optional[str]:
     """
     Black Friday is the day after thanksgiving (fourth Thursday of November)
     """
@@ -42,11 +43,11 @@ commercial_days = [
 ]
 
 
-def week_number_in_month(date):
+def week_number_in_month(date: datetime) -> int:
     return (date.day - 1) // 7 + 1
 
 
-def is_commercial_day(date):
+def is_commercial_day(date: datetime) -> Optional[str]:
     first_month_day = date.replace(day=1)
     # if the first 10th of the month is after the second weekend
     # the holiday is offset
@@ -71,7 +72,7 @@ SPECIAL_DAY_CHECKS = [
 ]
 
 
-def is_special_day(date=None):
+def is_special_day(date: datetime = None) -> Optional[str]:
     if date is None:
         date = datetime.today()
 

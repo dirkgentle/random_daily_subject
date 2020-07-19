@@ -1,0 +1,32 @@
+[
+    {
+        "id": "nwyr",
+        "title": "de año nuevo",
+        "count": 0,
+        "is_active": true,
+        "day": 1,
+        "month": 1,
+        "bodies": [
+            {
+                "id": "nwyr-01",
+                "count": 0,
+                "is_active": true,
+                "text": "Si ya incumplieron sus resoluciones de fin de año, bienvenidos al club."
+            }
+        ]
+    },
+    {
+        "id": "fake-hldy",
+        "title": "fake holiday",
+        "is_active": false,
+        "day": 5,
+        "month": 1,
+        "bodies": [
+            {
+                "id": "fake-hldy-01",
+                "is_active": false,
+                "text": "fake text"
+            }
+        ]
+    }
+] 
