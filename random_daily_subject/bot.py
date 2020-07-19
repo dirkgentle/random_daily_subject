@@ -5,11 +5,11 @@ from getopt import getopt, GetoptError
 
 import praw
 
-import special_days
-from config import AuthConfig, BasicConfig
-from db_handler import DBHandler
-from logger import output_log
-from random_post import choose_random_body, choose_random_title
+from random_daily_subject.config import AuthConfig, BasicConfig
+from random_daily_subject.db_handler import DBHandler
+from random_daily_subject.logger import output_log
+from random_daily_subject.random_post import choose_random_body, choose_random_title
+from random_daily_subject.special_days import is_special_day
 
 
 def bot(
@@ -32,8 +32,8 @@ def bot(
 
     if db_handler.is_date_holiday(date):
         title_id = db_handler.get_date_holiday(date).id
-    elif special_days.is_special_day(date):
-        title_id = special_days.is_special_day(date)
+    elif is_special_day(date):
+        title_id = is_special_day(date)
     else:
         title_id = choose_random_title(db_handler, log_limit)
 

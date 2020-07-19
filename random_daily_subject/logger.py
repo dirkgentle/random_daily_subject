@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from config import BasicConfig
+from .config import BasicConfig
 
 
 def output_log(text: str, debug_mode: bool = False) -> None:
