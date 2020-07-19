@@ -2,8 +2,6 @@ import json
 from datetime import datetime
 from typing import List
 
-import pytest
-
 from random_daily_subject.config import TopicFile
 from random_daily_subject.db_handler import DBHandler
 from random_daily_subject.models import Body, Holiday, Submission, Title

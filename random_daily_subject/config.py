@@ -36,7 +36,7 @@ class BasicConfig:
 
     epilogue_text = (
         "\n\n*****\n\n"
-        " *Another bot by \/u/DirkGentle.*"
+        " *Another bot by \\/u/DirkGentle.*"
         " [Source.](https://github.com/dirkgentle/random_daily_subject)"
     )
 
