@@ -1,108 +1,110 @@
 from datetime import datetime
 
+import pytest
+
 from random_daily_subject import special_days
 
 
-def test_is_tuesday():
-    tuesday = datetime(day=21, month=7, year=2020)
-    assert special_days.is_tuesday(tuesday) == "rant"
-
-    not_tuesday = datetime(day=22, month=7, year=2020)
-    assert special_days.is_tuesday(not_tuesday) is None
-
-
-def test_is_diversity_day():
-    diversity_days = [
-        datetime(day=27, month=9, year=2019),
-        datetime(day=28, month=9, year=2018),
-        datetime(day=29, month=9, year=2017),
-        datetime(day=30, month=9, year=2016),
-        datetime(day=25, month=9, year=2015),
-        datetime(day=26, month=9, year=2014),
-    ]
-    assert all(special_days.is_diversity_day(date) == "dvrs" for date in diversity_days)
-
-    not_diversity_day = datetime(day=18, month=7, year=2020)
-    assert special_days.is_diversity_day(not_diversity_day) is None
+@pytest.mark.parametrize(
+    "date,result",
+    [
+        (datetime(day=21, month=7, year=2020), "rant"),
+        (datetime(day=22, month=7, year=2020), None),
+    ],
+)
+def test_is_tuesday(date, result):
+    assert special_days.is_tuesday(date) == result
 
 
-def test_is_gnocchi_day():
-    gnocchi = datetime(day=29, month=7, year=2020)
-    assert special_days.is_gnocchi_day(gnocchi)
-
-    not_gnocchi = datetime(day=28, month=7, year=2020)
-    assert special_days.is_gnocchi_day(not_gnocchi) is None
-
-
-def test_is_black_friday():
-    black_fridays = [
-        datetime(day=29, month=11, year=2019),
-        datetime(day=23, month=11, year=2018),
-        datetime(day=24, month=11, year=2017),
-        datetime(day=25, month=11, year=2016),
-        datetime(day=27, month=11, year=2015),
-        datetime(day=28, month=11, year=2014),
-    ]
-    assert all(
-        special_days.is_black_friday(date) == "blk_frdy" for date in black_fridays
-    )
-
-    not_black_friday = datetime(day=18, month=7, year=2020)
-    assert special_days.is_black_friday(not_black_friday) is None
+@pytest.mark.parametrize(
+    "date,result",
+    [
+        (datetime(day=27, month=9, year=2019), "dvrs"),
+        (datetime(day=28, month=9, year=2018), "dvrs"),
+        (datetime(day=29, month=9, year=2017), "dvrs"),
+        (datetime(day=30, month=9, year=2016), "dvrs"),
+        (datetime(day=25, month=9, year=2015), "dvrs"),
+        (datetime(day=26, month=9, year=2014), "dvrs"),
+        (datetime(day=18, month=7, year=2020), None),
+    ],
+)
+def test_is_diversity_day(date, result):
+    assert special_days.is_diversity_day(date) == result
 
 
-def test_is_commercial_day():
-    mothers_days = [
-        datetime(day=17, month=5, year=2020),
-        datetime(day=12, month=5, year=2019),
-        datetime(day=13, month=5, year=2018),
-        datetime(day=14, month=5, year=2017),
-        datetime(day=15, month=5, year=2016),
-        # datetime(day=10, month=5, year=2015),
-    ]
-    assert all(special_days.is_commercial_day(date) == "mthrs" for date in mothers_days)
-
-    fathers_days = [
-        datetime(day=12, month=7, year=2020),
-        datetime(day=14, month=7, year=2019),
-        datetime(day=15, month=7, year=2018),
-        datetime(day=16, month=7, year=2017),
-        # datetime(day=10, month=7, year=2016),
-        datetime(day=12, month=7, year=2015),
-    ]
-    assert all(special_days.is_commercial_day(date) == "fthrs" for date in fathers_days)
-
-    childrens_day = [
-        datetime(day=16, month=8, year=2020),
-        datetime(day=18, month=8, year=2019),
-        datetime(day=12, month=8, year=2018),
-        # datetime(day=20, month=8, year=2017),
-        # datetime(day=21, month=8, year=2016),
-        datetime(day=16, month=8, year=2015),
-    ]
-    assert all(
-        special_days.is_commercial_day(date) == "chldn" for date in childrens_day
-    )
-
-    is_nothing_day = datetime(day=1, month=2, year=2020)
-    assert special_days.is_commercial_day(is_nothing_day) is None
+@pytest.mark.parametrize(
+    "date,result",
+    [
+        (datetime(day=29, month=7, year=2020), "noqui"),
+        (datetime(day=28, month=7, year=2020), None),
+    ],
+)
+def test_is_gnocchi_day(date, result):
+    assert special_days.is_gnocchi_day(date) == result
 
 
-def test_is_special_day():
-    nothing_day = datetime(day=1, month=1, year=2020)
-    assert special_days.is_special_day(nothing_day) is None
+@pytest.mark.parametrize(
+    "date,result",
+    [
+        (datetime(day=29, month=11, year=2019), "blk_frdy"),
+        (datetime(day=23, month=11, year=2018), "blk_frdy"),
+        (datetime(day=24, month=11, year=2017), "blk_frdy"),
+        (datetime(day=25, month=11, year=2016), "blk_frdy"),
+        (datetime(day=27, month=11, year=2015), "blk_frdy"),
+        (datetime(day=28, month=11, year=2014), "blk_frdy"),
+        (datetime(day=18, month=7, year=2020), None),
+    ],
+)
+def test_is_black_friday(date, result):
+    assert special_days.is_black_friday(date) == result
 
-    gnocchi_day = datetime(day=29, month=1, year=2020)
-    assert special_days.is_special_day(gnocchi_day)
 
-    gnocchi_tuesday = datetime(day=29, month=10, year=2019)
-    assert special_days.is_special_day(gnocchi_tuesday) == "rant"
+@pytest.mark.parametrize(
+    "date,result",
+    [
+        (datetime(day=17, month=5, year=2020), "mthrs"),
+        (datetime(day=12, month=5, year=2019), "mthrs"),
+        (datetime(day=13, month=5, year=2018), "mthrs"),
+        (datetime(day=14, month=5, year=2017), "mthrs"),
+        (datetime(day=15, month=5, year=2016), "mthrs"),
+        pytest.param(
+            datetime(day=10, month=5, year=2015), "mthrs", marks=pytest.mark.xfail
+        ),
+        (datetime(day=12, month=7, year=2020), "fthrs"),
+        (datetime(day=14, month=7, year=2019), "fthrs"),
+        (datetime(day=15, month=7, year=2018), "fthrs"),
+        (datetime(day=16, month=7, year=2017), "fthrs"),
+        pytest.param(
+            datetime(day=10, month=7, year=2016), "fhtrs", marks=pytest.mark.xfail
+        ),
+        (datetime(day=12, month=7, year=2015), "fthrs"),
+        (datetime(day=16, month=8, year=2020), "chldn"),
+        (datetime(day=18, month=8, year=2019), "chldn"),
+        (datetime(day=12, month=8, year=2018), "chldn"),
+        pytest.param(
+            datetime(day=20, month=8, year=2017), "chldn", marks=pytest.mark.xfail
+        ),
+        pytest.param(
+            datetime(day=21, month=8, year=2016), "chldn", marks=pytest.mark.xfail
+        ),
+        (datetime(day=16, month=8, year=2015), "chldn"),
+        (datetime(day=1, month=2, year=2020), None),
+    ],
+)
+def test_is_commercial_day(date, result):
+    assert special_days.is_commercial_day(date) == result
 
-    gnocchi_black_friday = datetime(day=29, month=11, year=2019)
-    assert special_days.is_special_day(gnocchi_black_friday) == "blk_frdy"
 
-    diversity_day = datetime(day=27, month=9, year=2019)
-    assert special_days.is_special_day(diversity_day) == "dvrs"
-
-    commercial_day = datetime(day=15, month=7, year=2018)
-    assert special_days.is_special_day(commercial_day) == "fthrs"
+@pytest.mark.parametrize(
+    "date,result",
+    [
+        (datetime(day=1, month=1, year=2020), None),
+        (datetime(day=29, month=1, year=2020), "noqui"),
+        (datetime(day=29, month=10, year=2019), "rant"),
+        (datetime(day=29, month=11, year=2019), "blk_frdy"),
+        (datetime(day=27, month=9, year=2019), "dvrs"),
+        (datetime(day=15, month=7, year=2018), "fthrs"),
+    ],
+)
+def test_is_special_day(date, result):
+    assert special_days.is_special_day(date) == result
