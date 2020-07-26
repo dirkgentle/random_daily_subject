@@ -12,4 +12,4 @@ RUN poetry install --no-dev
 COPY random_daily_subject ./random_daily_subject
 RUN poetry install --no-dev
 
-CMD ["poetry", "run", "python", "random_daily_subject/bot.py"]
+CMD ["poetry", "run", "python", "random_daily_subject/scheduler.py"]

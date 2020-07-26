@@ -8,6 +8,7 @@ authors = ["dirkgentle"]
 python = "^3.8"
 praw = "^7.1.0"
 sqlalchemy = "^1.3.18"
+apscheduler = "^3.6.3"
 
 [tool.poetry.dev-dependencies]
 ipython = "^7.16.1"
