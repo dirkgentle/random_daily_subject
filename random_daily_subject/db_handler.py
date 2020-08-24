@@ -11,7 +11,11 @@ from .tables import Topics, Submissions
 
 class DBHandler:
     def __init__(self, db_url: str = BasicConfig.db_url) -> None:
-        self.dynamodb = boto3.resource("dynamodb", endpoint_url=BasicConfig.db_url)
+        self.dynamodb = boto3.resource(
+            "dynamodb",
+            endpoint_url=BasicConfig.db_url,
+            region_name=BasicConfig.region_name,
+        )
 
         tables = [Topics, Submissions]
         existing_tables = [table.name for table in self.dynamodb.tables.all()]

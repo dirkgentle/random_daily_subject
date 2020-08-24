@@ -17,6 +17,7 @@ class BasicConfig:
 
     logs_folder = "./logs"
     db_url = os.getenv("DB_URL")
+    region_name = "sa-east-1"
 
     json_folder = "./topics"
     topic_files = [
