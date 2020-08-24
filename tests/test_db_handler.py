@@ -4,7 +4,6 @@ from typing import List
 
 from random_daily_subject.config import TopicFile
 from random_daily_subject.db_handler import DBHandler
-from random_daily_subject.models import Body, Holiday, Submission, Title
 
 
 def test_load_topics(loaded_db: DBHandler, topic_files: List[TopicFile]) -> None:
@@ -16,103 +15,109 @@ def test_load_topics(loaded_db: DBHandler, topic_files: List[TopicFile]) -> None
         is_special = topic_file.get("is_special", False)
 
         for topic in topics:
-            title = loaded_db.session.query(Title).filter_by(id=topic["id"]).one()
-            assert title.title == topic["title"]
-            assert title.count == topic.get("count", 0)
-            assert title.is_holiday == is_holiday
-            assert title.is_special == is_special
-            assert title.is_active == topic.get("is_active", True)
+            db_topic = loaded_db.topics_table.get_item(Key={"id": topic["id"]})["Item"]
+            assert db_topic["title"] == topic["title"]
+            assert db_topic["count"] == topic.get("count", 0)
+            assert db_topic["is_holiday"] == is_holiday
+            assert db_topic["is_special"] == is_special
+            assert db_topic["is_active"] == topic.get("is_active", True)
 
             if is_holiday:
-                holiday = (
-                    loaded_db.session.query(Holiday)
-                    .filter_by(title_id=topic["id"])
-                    .one()
-                )
-                assert holiday.day == topic["day"]
-                assert holiday.month == topic["month"]
-                assert holiday.is_active == topic.get("is_active", True)
+                assert db_topic["day"] == topic["day"]
+                assert db_topic["month"] == topic["month"]
 
             for body in topic.get("bodies"):
-                db_body = loaded_db.session.query(Body).filter_by(id=body["id"]).one()
-                assert db_body.body == body["text"]
-                assert db_body.title_id == topic["id"]
-                assert db_body.is_active == body.get("is_active", True)
+                db_body = next(
+                    db_body
+                    for db_body in db_topic["bodies"]
+                    if db_body["id"] == body["id"]
+                )
+                assert db_body is not None
+                assert db_body["text"] == body["text"]
+                assert db_body["is_active"] == body.get("is_active", True)
+                assert db_body["count"] == body.get("count", 0)
 
 
 def test_clean_topics(loaded_db: DBHandler, empty_files: List[TopicFile]) -> None:
     loaded_db.clean_topics(empty_files)
 
-    assert all(not title.is_active for title in loaded_db.session.query(Title).all())
-    assert all(not body.is_active for body in loaded_db.session.query(Body).all())
-    assert all(
-        not holiday.is_active for holiday in loaded_db.session.query(Holiday).all()
-    )
+    scan_kwargs = {}
+    all_topics = []
+    done = False
+    start_key = None
+    while not done:
+        if start_key:
+            scan_kwargs["ExclusiveStartKey"] = start_key
+        response = loaded_db.topics_table.scan(**scan_kwargs)
+        all_topics += response.get("Items")
+        start_key = response.get("LastEvaluatedKey", None)
+        done = start_key is None
+
+    all_bodies = [body for topic in all_topics for body in topic["bodies"]]
+
+    assert all(not topic["is_active"] for topic in all_topics)
+    assert all(not body["is_active"] for body in all_bodies)
 
 
-def test_add_submission(loaded_db: DBHandler, sample_title: Title) -> None:
-    sample_body = sample_title.bodies[0]
+def test_add_submission(loaded_db: DBHandler, sample_topic) -> None:
+    sample_body = sample_topic["bodies"][0]
     date = datetime.now()
 
-    old_title_count = (
-        loaded_db.session.query(Title.count).filter_by(id=sample_title.id).scalar()
-    )
-    old_body_count = (
-        loaded_db.session.query(Body.count).filter_by(id=sample_body.id).scalar()
+    old_topic = loaded_db.topics_table.get_item(Key={"id": sample_topic["id"]})["Item"]
+    old_body = next(
+        body for body in old_topic["bodies"] if body["id"] == sample_body["id"]
     )
 
-    loaded_db.add_submission(sample_title.id, sample_body.id, date)
+    loaded_db.add_submission(sample_topic["id"], sample_body["id"], date)
 
-    submission = loaded_db.session.query(Submission).filter_by(date=date).one()
+    submission = loaded_db.submissions_table.get_item(Key={"date": date.isoformat()})[
+        "Item"
+    ]
 
-    assert submission.title_id == sample_title.id
-    assert submission.body_id == sample_body.id
-    assert submission.date == date
-    assert submission.weekday == date.weekday()
+    assert submission["title_id"] == sample_topic["id"]
+    assert submission["body_id"] == sample_body["id"]
+    assert submission["date"] == date.isoformat()
+    assert submission["weekday"] == date.weekday()
 
-    new_title_count = (
-        loaded_db.session.query(Title.count).filter_by(id=sample_title.id).scalar()
+    new_topic = loaded_db.topics_table.get_item(Key={"id": sample_topic["id"]})["Item"]
+    new_body = next(
+        body for body in new_topic["bodies"] if body["id"] == sample_body["id"]
     )
-    new_body_count = (
-        loaded_db.session.query(Body.count).filter_by(id=sample_body.id).scalar()
-    )
 
-    assert new_title_count == old_title_count + 1
-    assert new_body_count == old_body_count + 1
+    assert new_topic["count"] == old_topic["count"] + 1
+    assert new_body["count"] == old_body["count"] + 1
 
 
 def test_is_date_holiday(
-    loaded_db: DBHandler,
-    sample_holiday: Holiday,
-    sample_no_holiday: Holiday,
-    sample_inactive_holiday: Holiday,
+    loaded_db: DBHandler, sample_holiday, sample_no_holiday, sample_inactive_holiday,
 ) -> None:
     assert loaded_db.is_date_holiday(
-        datetime(day=sample_holiday.day, month=sample_holiday.month, year=2020)
-    )
-    assert not loaded_db.is_date_holiday(
-        datetime(day=sample_no_holiday.day, month=sample_no_holiday.month, year=2020)
+        datetime(day=sample_holiday["day"], month=sample_holiday["month"], year=2020)
     )
     assert not loaded_db.is_date_holiday(
         datetime(
-            day=sample_inactive_holiday.day,
-            month=sample_inactive_holiday.month,
+            day=sample_no_holiday["day"], month=sample_no_holiday["month"], year=2020
+        )
+    )
+    assert not loaded_db.is_date_holiday(
+        datetime(
+            day=sample_inactive_holiday["day"],
+            month=sample_inactive_holiday["month"],
             year=2020,
         )
     )
 
 
 def test_get_day_holiday(loaded_db: DBHandler, sample_holiday) -> None:
-    title = loaded_db.get_date_holiday(
-        datetime(day=sample_holiday.day, month=sample_holiday.month, year=2020)
+    topic = loaded_db.get_date_holiday(
+        datetime(day=sample_holiday["day"], month=sample_holiday["month"], year=2020)
     )
 
-    assert title.id == sample_holiday.title_id
+    assert topic["id"] == sample_holiday["id"]
 
 
 def test_get_all_titles(loaded_db: DBHandler, topic_files: List[TopicFile]) -> None:
-    all_db_titles = loaded_db.get_all_titles()
-    all_db_titles = [title.id for title in all_db_titles]
+    all_db_titles = [title["id"] for title in loaded_db.get_all_titles()]
     all_json_titles = []
 
     for topic_file in topic_files:
@@ -127,38 +132,37 @@ def test_get_all_titles(loaded_db: DBHandler, topic_files: List[TopicFile]) -> N
         assert set(all_db_titles) == set(all_json_titles)
 
 
-def test_get_title(loaded_db: DBHandler, sample_title: Title) -> None:
-    title = loaded_db.get_title(sample_title.id)
+def test_get_title(loaded_db: DBHandler, sample_topic) -> None:
+    topic = loaded_db.get_title(sample_topic["id"])
 
-    assert title.id == sample_title.id
-    assert title.title == sample_title.title
+    assert topic["id"] == sample_topic["id"]
+    assert topic["title"] == sample_topic["title"]
 
 
-def test_get_all_bodies(loaded_db: DBHandler, sample_title: Title) -> None:
-    all_bodies = loaded_db.get_all_bodies(sample_title.id)
-    all_bodies = [body.id for body in all_bodies]
-    sample_bodies = [body.id for body in sample_title.bodies]
+def test_get_all_bodies(loaded_db: DBHandler, sample_topic) -> None:
+    all_bodies = loaded_db.get_all_bodies(sample_topic["id"])
+    all_bodies = [body["id"] for body in all_bodies]
+    sample_bodies = [body["id"] for body in sample_topic["bodies"]]
 
     assert set(all_bodies) == set(sample_bodies)
 
 
-def test_get_body(loaded_db: DBHandler, sample_title: Title) -> None:
-    sample_body = sample_title.bodies[0]
-    body = loaded_db.get_body(sample_body.id)
+def test_get_body(loaded_db: DBHandler, sample_topic) -> None:
+    sample_body = sample_topic["bodies"][0]
+    body = loaded_db.get_body(sample_topic["id"], sample_body["id"])
 
-    assert body.id == sample_body.id
-    assert body.body == sample_body.body
+    assert body["id"] == sample_body["id"]
+    assert body["text"] == sample_body["text"]
 
 
-def test_get_latest_submissions(
-    db_with_history: DBHandler, sample_submission: Submission
-) -> None:
+def test_get_latest_submissions(db_with_history: DBHandler, sample_submission) -> None:
     n = 3
     latest_submissions = db_with_history.get_latest_submissions(n)
 
     assert len(latest_submissions) == n
-    assert all(isinstance(sub, Submission) for sub in latest_submissions)
+    assert all(sub["title_id"] for sub in latest_submissions)
+    assert all(sub["body_id"] for sub in latest_submissions)
     assert all(
-        sub1.date > sub2.date
+        sub1["date"] > sub2["date"]
         for sub1, sub2 in zip(latest_submissions, latest_submissions[1:])
     )

@@ -16,7 +16,8 @@ class BasicConfig:
     subreddit = "Uruguay" if not debug_mode else "test"
 
     logs_folder = "./logs"
-    db_path = "sqlite:///./db/topics.db"
+    db_url = os.getenv("DB_URL")
+
     json_folder = "./topics"
     topic_files = [
         {"path": f"{json_folder}/topics.json"},

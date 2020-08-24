@@ -3,16 +3,17 @@ from datetime import datetime
 from typing import List
 
 import pytest
+from moto import mock_dynamodb2
 
 from random_daily_subject.config import TopicFile
 from random_daily_subject.db_handler import DBHandler
-from random_daily_subject.models import Body, Holiday, Submission, Title
 
 
 @pytest.fixture
 def db_handler() -> DBHandler:
-    db_handler = DBHandler("sqlite:///:memory:")
-    return db_handler
+    with mock_dynamodb2():
+        db_handler = DBHandler()
+        yield db_handler
 
 
 @pytest.fixture
@@ -47,8 +48,8 @@ def db_with_history(loaded_db: DBHandler, topic_files: List[TopicFile]) -> DBHan
 
 
 @pytest.fixture
-def sample_title() -> Title:
-    return Title(
+def sample_topic():
+    return dict(
         id="grmt",
         title="gourmet",
         count=0,
@@ -56,10 +57,10 @@ def sample_title() -> Title:
         is_special=False,
         is_active=True,
         bodies=[
-            Body(id="grmt-01", count=0, is_active=True, body="El rincon culinario."),
-            Body(id="grmt-02", count=2, is_active=True, body="Que cocinaste anoche?"),
-            Body(id="grmt-03", count=2, is_active=True, body="Sample 3"),
-            Body(id="grmt-04", count=4, is_active=True, body="Sample 4"),
+            dict(id="grmt-01", count=0, is_active=True, text="El rincon culinario."),
+            dict(id="grmt-02", count=2, is_active=True, text="Que cocinaste anoche?"),
+            dict(id="grmt-03", count=2, is_active=True, text="Sample 3"),
+            dict(id="grmt-04", count=4, is_active=True, text="Sample 4"),
         ],
     )
 
@@ -74,36 +75,32 @@ def empty_files() -> List[TopicFile]:
 
 
 @pytest.fixture
-def sample_holiday() -> Holiday:
-    return Holiday(
-        title_id="nwyr",
-        day=1,
-        month=1,
-        is_active=True,
-        title=Title(title="de año nuevo"),
+def sample_holiday():
+    return dict(
+        id="nwyr", day=1, month=1, is_active=True, title=dict(title="de año nuevo"),
     )
 
 
 @pytest.fixture
-def sample_no_holiday() -> Holiday:
+def sample_no_holiday():
     """This should not be a holiday in the db."""
-    return Holiday(title_id="no-holiday", day=2, month=1)
+    return dict(id="no-holiday", day=2, month=1)
 
 
 @pytest.fixture
-def sample_inactive_holiday() -> Holiday:
-    return Holiday(
-        title_id="fake-hldy",
+def sample_inactive_holiday():
+    return dict(
+        id="fake-hldy",
         day=5,
         month=1,
         is_active=False,
-        title=Title(id="nwyr", title="fake holiday"),
+        title=dict(id="nwyr", title="fake holiday"),
     )
 
 
 @pytest.fixture
-def sample_submission() -> Submission:
-    return Submission(
+def sample_submission():
+    return dict(
         date=datetime(day=18, month=7, year=2020),
         weekday=6,
         title_id="grmt",

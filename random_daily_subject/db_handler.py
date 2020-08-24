@@ -2,21 +2,34 @@ import json
 from datetime import datetime
 from typing import List, Optional
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+import boto3
+from boto3.dynamodb.conditions import Key
 
-from .models import Base, Body, Holiday, Submission, Title
 from .config import BasicConfig, TopicFile
+from .tables import Topics, Submissions
 
 
 class DBHandler:
-    def __init__(self, db_path: str = BasicConfig.db_path) -> None:
-        self.engine = create_engine(db_path)
+    def __init__(self, db_url: str = BasicConfig.db_url) -> None:
+        self.dynamodb = boto3.resource("dynamodb", endpoint_url=BasicConfig.db_url)
 
-        Base.metadata.create_all(self.engine)
+        tables = [Topics, Submissions]
+        existing_tables = [table.name for table in self.dynamodb.tables.all()]
 
-        Session = sessionmaker(bind=self.engine)
-        self.session = Session()
+        for table in tables:
+            if table.name not in existing_tables:
+                self.dynamodb.create_table(
+                    TableName=table.name,
+                    KeySchema=table.key_schema,
+                    AttributeDefinitions=table.attribute_definitions,
+                    ProvisionedThroughput={
+                        "ReadCapacityUnits": 10,
+                        "WriteCapacityUnits": 10,
+                    },
+                )
+
+        self.topics_table = self.dynamodb.Table(Topics.name)
+        self.submissions_table = self.dynamodb.Table(Submissions.name)
 
     def load_topics(
         self, topic_files: List[TopicFile] = BasicConfig.topic_files
@@ -34,53 +47,18 @@ class DBHandler:
             for topic in topics:
                 now = datetime.now()
 
-                title = (
-                    self.session.query(Title).filter_by(id=topic["id"]).one_or_none()
-                )
-                if title is None:
-                    title = Title(
-                        id=topic["id"], count=topic.get("count", 0), created_at=now,
-                    )
+                topic["is_holiday"] = is_holiday
+                topic["is_special"] = is_special
+                topic["modified_at"] = now.isoformat()
+                topic["is_active"] = topic.get("is_active", True)
+                topic["count"] = topic.get("count", 0)
 
-                title.title = topic["title"]
-                title.is_holiday = is_holiday
-                title.is_special = is_special
-                title.modified_at = now
-                title.is_active = topic.get("is_active", True)
+                for body in topic["bodies"]:
+                    body["modified_at"] = now.isoformat()
+                    body["is_active"] = body.get("is_active", True)
+                    body["count"] = body.get("count", 0)
 
-                if is_holiday:
-                    holiday = (
-                        self.session.query(Holiday)
-                        .filter_by(title_id=topic["id"])
-                        .one_or_none()
-                    )
-                    if holiday is None:
-                        holiday = Holiday(created_at=now)
-
-                    holiday.day = topic["day"]
-                    holiday.month = topic["month"]
-                    holiday.modified_at = now
-                    holiday.is_active = topic.get("is_active", True)
-
-                    title.holidays = [holiday]
-
-                for body in topic.get("bodies"):
-                    db_body = (
-                        self.session.query(Body).filter_by(id=body["id"]).one_or_none()
-                    )
-                    if db_body is None:
-                        db_body = Body(
-                            id=body["id"], count=body.get("count", 0), created_at=now
-                        )
-
-                    db_body.body = body["text"]
-                    db_body.modified_at = now
-                    db_body.is_active = body.get("is_active", True)
-
-                    title.bodies.append(db_body)
-
-                self.session.add(title)
-        self.session.commit()
+                _ = self.topics_table.put_item(Item=topic)
 
     def clean_topics(
         self, topic_files: List[TopicFile] = BasicConfig.topic_files
@@ -98,24 +76,44 @@ class DBHandler:
         active_bodies = [
             body["id"] for topic in active_topics for body in topic["bodies"]
         ]
-        now = datetime.now()
+        now = datetime.now().isoformat()
 
-        for db_title in self.session.query(Title).filter_by(is_active=True):
-            if db_title.id not in active_titles:
-                db_title.is_active = False
-                db_title.modified_at = now
+        scan_kwargs = {}
 
-        for db_holiday in self.session.query(Holiday).filter_by(is_active=True):
-            if db_holiday.title_id not in active_titles:
-                db_holiday.is_active = False
-                db_title.modified_at = now
+        done = False
+        start_key = None
+        while not done:
+            if start_key:
+                scan_kwargs["ExclusiveStartKey"] = start_key
+            response = self.topics_table.scan(**scan_kwargs)
 
-        for db_body in self.session.query(Body).filter_by(is_active=True):
-            if db_body.id not in active_bodies:
-                db_body.is_active = False
-                db_body.modified_at = now
+            for topic in response.get("Items", []):
+                if topic["id"] not in active_titles:
+                    response = self.topics_table.update_item(
+                        Key={"id": topic["id"]},
+                        UpdateExpression="set is_active=:a, modified_at=:n",
+                        ExpressionAttributeValues={":a": False, ":n": now},
+                        ReturnValues="UPDATED_NEW",
+                    )
 
-        self.session.commit()
+                bodies_to_update = [
+                    body["is_active"] and body not in active_bodies
+                    for body in topic["bodies"]
+                ]
+                if bodies_to_update:
+                    for body in topic["bodies"]:
+                        if body["id"] not in active_bodies:
+                            body["is_active"] = False
+
+                    _ = self.topics_table.update_item(
+                        Key={"id": topic["id"]},
+                        UpdateExpression="set bodies=:b, modified_at=:n",
+                        ExpressionAttributeValues={":b": topic["bodies"], ":n": now},
+                        ReturnValues="UPDATED_NEW",
+                    )
+
+            start_key = response.get("LastEvaluatedKey", None)
+            done = start_key is None
 
     def add_submission(
         self,
@@ -129,94 +127,182 @@ class DBHandler:
         if sub_date is None:
             sub_date = datetime.now()
 
-        submission = Submission(date=sub_date, weekday=sub_date.weekday())
+        self.submissions_table.put_item(
+            Item={
+                "date": sub_date.isoformat(),
+                "weekday": sub_date.weekday(),
+                "title_id": title_id,
+                "body_id": body_id,
+            }
+        )
 
-        submission.title = self.session.query(Title).filter_by(id=title_id).one()
-        submission.title.count += 1
+        topic = self.topics_table.get_item(Key={"id": title_id})["Item"]
+        topic["count"] += 1
+
         if body_id is not None:
-            submission.body = self.session.query(Body).filter_by(id=body_id).one()
-            submission.body.count += 1
+            for body in topic["bodies"]:
+                if body["id"] == body_id:
+                    body["count"] += 1
+                    break
 
-        self.session.add(submission)
-        self.session.commit()
+        _ = self.topics_table.update_item(
+            Key={"id": title_id},
+            UpdateExpression="set #c=:c, bodies=:b",
+            ExpressionAttributeValues={":c": topic["count"], ":b": topic["bodies"]},
+            ExpressionAttributeNames={"#c": "count"},
+            ReturnValues="UPDATED_NEW",
+        )
 
-    def is_date_holiday(self, date: datetime) -> None:
+    def is_date_holiday(self, date: datetime) -> bool:
         """
         Check if a given date is a holiday or not.
         """
-        return bool(
-            self.session.query(Holiday)
-            .filter_by(day=date.day, month=date.month, is_active=True)
-            .one_or_none()
-        )
+        scan_kwargs = {
+            "FilterExpression": Key("day").eq(date.day)
+            & Key("month").eq(date.month)
+            & Key("is_active").eq(True),
+            "ProjectionExpression": "id",
+        }
 
-    def get_date_holiday(self, date: datetime) -> Holiday:
+        done = False
+        start_key = None
+        while not done:
+            if start_key:
+                scan_kwargs["ExclusiveStartKey"] = start_key
+            response = self.topics_table.scan(**scan_kwargs)
+
+            if response.get("Items"):
+                return True
+
+            start_key = response.get("LastEvaluatedKey", None)
+            done = start_key is None
+
+        return False
+
+    def get_date_holiday(self, date: datetime):
         """
         Returns the title object for a given date if it's a holiday
         """
-        return (
-            self.session.query(Holiday)
-            .filter_by(day=date.day, month=date.month)
-            .one()
-            .title
-        )
+        scan_kwargs = {
+            "FilterExpression": Key("day").eq(date.day)
+            & Key("month").eq(date.month)
+            & Key("is_active").eq(True),
+        }
 
-    def get_all_titles(self) -> List[Title]:
+        done = False
+        start_key = None
+        while not done:
+            if start_key:
+                scan_kwargs["ExclusiveStartKey"] = start_key
+            response = self.topics_table.scan(**scan_kwargs)
+
+            if response.get("Items"):
+                return response.get("Items")[0]
+
+            start_key = response.get("LastEvaluatedKey", None)
+            done = start_key is None
+
+    def get_all_titles(self):
         """
         Get all available titles that are not holidays or special days.
         """
-        return (
-            self.session.query(Title)
-            .filter_by(is_holiday=False, is_special=False)
-            .all()
-        )
+        scan_kwargs = {
+            "FilterExpression": Key("is_active").eq(True)
+            & Key("is_holiday").eq(False)
+            & Key("is_special").eq(False),
+        }
+        all_titles = []
 
-    def get_title(self, title_id: str) -> Title:
+        done = False
+        start_key = None
+        while not done:
+            if start_key:
+                scan_kwargs["ExclusiveStartKey"] = start_key
+            response = self.topics_table.scan(**scan_kwargs)
+
+            all_titles += response.get("Items")
+
+            start_key = response.get("LastEvaluatedKey", None)
+            done = start_key is None
+
+        return all_titles
+
+    def get_title(self, title_id: str):
         """
         Get a title from its title id.
         """
-        return self.session.query(Title).filter_by(id=title_id).one()
+        response = self.topics_table.get_item(Key={"id": title_id})
+        return response.get("Item")
 
-    def get_all_bodies(self, title_id: str) -> List[Body]:
+    def get_all_bodies(self, title_id: str):
         """
         Get all available bodies for a specific title.
         """
-        return self.session.query(Body).filter_by(title_id=title_id).all()
+        response = self.topics_table.get_item(Key={"id": title_id})
 
-    def get_body(self, body_id: str) -> Body:
+        topic = response.get("Item")
+
+        if topic is not None:
+            return topic["bodies"]
+
+    def get_body(self, title_id: str, body_id: str):
         """
         Get a title text from its title id.
         """
-        return self.session.query(Body).filter_by(id=body_id).one()
+        response = self.topics_table.get_item(Key={"id": title_id})
+        topic = response.get("Item")
 
-    def get_latest_submissions(self, n: int = 6) -> List[Submission]:
+        if topic is not None:
+            for body in topic["bodies"]:
+                if body["id"] == body_id:
+                    return body
+
+    def get_latest_submissions(self, n: int = 6):
         """
         Return the last `n` submissions from the db.
         """
-        return self.session.query(Submission).order_by(Submission.date.desc())[:n]
+        scan_kwargs = {}
+        submissions = []
+
+        done = False
+        start_key = None
+        while not done:
+            if start_key:
+                scan_kwargs["ExclusiveStartKey"] = start_key
+            response = self.submissions_table.scan(**scan_kwargs)
+
+            submissions += response.get("Items")
+
+            start_key = response.get("LastEvaluatedKey", None)
+            done = start_key is None
+
+        submissions.sort(key=lambda submission: submission["date"], reverse=True)
+
+        return submissions[:n]
 
     def print_topics(self) -> None:
         """
         Human readable view of the topics from the db.
         """
-        for title in self.session.query(Title):
+        for title in self.get_all_titles():
             print("*" * 15)
-            print(f"id: {title.id}")
-            print(f"title: {title.title}")
+            print(f"id: {title['id']}")
+            print(f"title: {title['title']}")
 
-            if not title.is_active:
+            if not title["is_active"]:
                 print("-- INACTIVE --")
-            if title.is_holiday:
-                holiday = self.session.query(Holiday).filter_by(title_id=title.id).one()
-                print(f"-- Day {holiday.day} of month {holiday.month} is a holiday! --")
-            if title.is_special:
+            if title["is_holiday"]:
+                print(
+                    f"-- Day {title['day']} of month {title['month']} is a holiday! --"
+                )
+            if title["is_special"]:
                 print("-- It's a special day. --")
 
-            for body in title.bodies:
-                if not body.is_active:
+            for body in title["bodies"]:
+                if not body["is_active"]:
                     print("-- INACTIVE --")
-                print(f"\t {body.body}")
-                if not body.is_active:
+                print(f"\t {body['text']}")
+                if not body["is_active"]:
                     print("-- --")
         print("*" * 15)
 
@@ -224,12 +310,14 @@ class DBHandler:
         """
         Human readable view of the db submissions.
         """
-        for submission in self.session.query(Submission):
+        for submission in self.get_latest_submissions():
             print("*" * 15)
-            print(f"{submission.date} wday = {submission.weekday}")
-            print(f"Title: {submission.title.title}")
-            if submission.body:
-                print(f"Body: {submission.body.body}")
+            print(f"{submission['date']} wday = {submission['weekday']}")
+            title = self.get_title(submission["title_id"])
+            print(f"Title: {title['title']}")
+            if submission["body_id"]:
+                body = self.get_body(submission["title_id"], submission["body_id"])
+                print(f"Body: {body['text']}")
 
 
 if __name__ == "__main__":

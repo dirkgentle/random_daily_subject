@@ -31,15 +31,15 @@ def bot(
     output_log("Starting script", debug_mode)
 
     if db_handler.is_date_holiday(date):
-        title_id = db_handler.get_date_holiday(date).id
+        title_id = db_handler.get_date_holiday(date)["id"]
     elif is_special_day(date):
         title_id = is_special_day(date)
     else:
         title_id = choose_random_title(db_handler, log_limit)
 
     body_id = choose_random_body(db_handler, title_id)
-    title = db_handler.get_title(title_id).title
-    body = db_handler.get_body(body_id).body
+    title = db_handler.get_title(title_id)["title"]
+    body = db_handler.get_body(title_id, body_id)["text"]
 
     if debug_mode:
         print(f"Log: {db_handler.get_latest_submissions(log_limit)}")
