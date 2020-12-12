@@ -36,6 +36,11 @@ class BasicConfig:
 
     epilogue_text = (
         "\n\n*****\n\n"
+        " Recuerden que el tema del día es solo una sugerencia."
+        " *En estos posts no aplica la regla de contenido relacionado con Uruguay.*"
+        " Pueden hablar de lo que quieran,"
+        " mientras no rompa ninguna otra regla de Reddit o del sub."
+        " \n\n*****\n\n"
         " *Another bot by \\/u/DirkGentle.*"
         " [Source.](https://github.com/dirkgentle/random_daily_subject)"
     )
