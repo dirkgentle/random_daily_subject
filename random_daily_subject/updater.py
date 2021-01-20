@@ -1,6 +1,6 @@
 import os
 
-import useful_scripts
+from random_daily_subject import useful_scripts
 
 
 if __name__ == "__main__":

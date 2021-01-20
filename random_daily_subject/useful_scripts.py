@@ -1,8 +1,8 @@
 import datetime
 import sqlite3
 
-from db_handler import DBHandler
-from config import BasicConfig
+from random_daily_subject.db_handler import DBHandler
+from random_daily_subject.config import BasicConfig
 
 
 # update db when the topics are updated
