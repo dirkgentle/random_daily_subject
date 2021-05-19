@@ -12,5 +12,19 @@
                 "text": "**DALE BO ES MARTES!**"
             }
         ]
+    },
+    {
+        "id": "rndm",
+        "title": "random",
+        "count": 0,
+        "is_active": true,
+        "bodies": [
+            {
+                "id": "rndm-01",
+                "count": 0,
+                "is_active": true,
+                "text": "Pongan lo que quieran y dejen que los votos hagan su trabajo."
+            }
+        ]
     }
 ] 

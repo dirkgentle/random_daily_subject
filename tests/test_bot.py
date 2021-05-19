@@ -11,6 +11,7 @@ from random_daily_subject.db_handler import DBHandler
     [
         datetime(day=1, month=1, year=2020),
         datetime(day=2, month=1, year=2020),
+        datetime(day=5, month=1, year=2020),
         datetime(day=7, month=1, year=2020),
     ],
 )
