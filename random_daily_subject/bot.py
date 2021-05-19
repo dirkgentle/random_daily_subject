@@ -52,16 +52,17 @@ def bot(
     output_log(body, debug_mode)
 
     if not debug_mode:
-        submission = reddit_client.subreddit(BasicConfig.subreddit).submit(
-            title, selftext=body
-        )
         # set flair
         template_id = next(
-            x
-            for x in submission.flair.choices()
-            if x["flair_text"] == BasicConfig.flair_text
-        )["flair_template_id"]
-        submission.flair.select(template_id)
+            t["id"]
+            for t in reddit_client.subreddit.flair.link_templates
+            if t["type"] == "richtext"
+            and any(chunk.get("t") == BasicConfig.flair_text for chunk in t["richtext"])
+        )
+
+        _ = reddit_client.subreddit(BasicConfig.subreddit).submit(
+            title, selftext=body, flair_id=template_id
+        )
 
 
 if __name__ == "__main__":
