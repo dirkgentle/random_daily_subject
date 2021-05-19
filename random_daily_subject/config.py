@@ -45,4 +45,4 @@ class BasicConfig:
         " [Source.](https://github.com/dirkgentle/random_daily_subject)"
     )
 
-    flair_text = os.getenv("REDDIT_FLAIR", "Espacio offtopic")
+    flair_text = os.getenv("REDDIT_FLAIR", "AskUruguay 🧉")
