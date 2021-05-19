@@ -19,6 +19,17 @@ def test_is_tuesday(date, result):
 @pytest.mark.parametrize(
     "date,result",
     [
+        (datetime(day=25, month=7, year=2020), None),
+        (datetime(day=26, month=7, year=2020), "rndm"),
+    ],
+)
+def test_is_sunday(date, result):
+    assert special_days.is_sunday(date) == result
+
+
+@pytest.mark.parametrize(
+    "date,result",
+    [
         (datetime(day=27, month=9, year=2019), "dvrs"),
         (datetime(day=28, month=9, year=2018), "dvrs"),
         (datetime(day=29, month=9, year=2017), "dvrs"),
@@ -104,6 +115,7 @@ def test_is_commercial_day(date, result):
         (datetime(day=29, month=11, year=2019), "blk_frdy"),
         (datetime(day=27, month=9, year=2019), "dvrs"),
         (datetime(day=15, month=7, year=2018), "fthrs"),
+        (datetime(day=8, month=7, year=2018), "rndm"),
     ],
 )
 def test_is_special_day(date, result):

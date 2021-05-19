@@ -8,6 +8,11 @@ def is_tuesday(date: datetime) -> Optional[str]:
         return "rant"
 
 
+def is_sunday(date: datetime) -> Optional[str]:
+    if date.weekday() == 6:
+        return "rndm"
+
+
 def is_diversity_day(date: datetime) -> Optional[str]:
     diversity_day = max(week[-3] for week in monthcalendar(date.year, 9))
     if date.month == 9 and date.day == diversity_day:
@@ -68,6 +73,7 @@ SPECIAL_DAY_CHECKS = [
     is_diversity_day,
     is_black_friday,
     is_tuesday,
+    is_sunday,
     is_gnocchi_day,
 ]
 
